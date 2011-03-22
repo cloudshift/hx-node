@@ -1,0 +1,66 @@
+
+bdog-node provides haxe type signatures to Node.js. 
+
+In this project only the files required to use the Node.js type signatures are provided.
+Previously I bundled the entire the haxe js dir, but I feel this was probably a confusion
+for anyone coming from outside the haxe communtity. Other haxe integration features will
+be bundled in separate libs.
+
+Status
+------
+
+The base Node API is in js/Node.hx. 
+
+API is now (more or less) at 0.1.99
+
+Note, I haven't wrapped Assert or REPL.
+Partially added Script, didn't do static methods.
+Partial Crypto.
+
+
+Compiling with haxe
+-------------------
+
+NOTE: BEGIN_SRC is for emacs orgmode source highlighting
+
+For example, file Ex1.hx
+
+#+BEGIN_SRC haxe
+
+import js.Node;
+
+class Ex1 {
+   public static function main() {
+      trace(Node.process.memoryUsage());
+      trace(Node.process.memoryUsage().heapTotal);
+
+      var dns = Node.dns();
+      dns.resolve("ipowerhouse.com","A",function(err,ips:Array<Dynamic>) {
+          trace(ips);
+          });
+   }
+
+}
+
+#+END_SRC
+
+Compile with
+
+haxe -D nodejs -cp . -js ex1.js -main Ex1
+
+where -cp . adds the current directory to the classpath which should include the provided js 
+directory. You must add  -D nodejs to the compile line.
+
+and then to execute
+
+node ex1.js
+
+Ex1.hx:6: {
+	rss : 10039296, 
+	vsize : 638578688, 
+	heapTotal : 5005376, 
+	heapUsed : 2497376
+}
+Ex1.hx:7: 5029952
+Ex1.hx:11: [204.232.203.106]
+
