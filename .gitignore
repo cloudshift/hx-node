@@ -1,3 +1,4 @@
 .hgignore
 .hg
 eproject.cfg
+haxelib.xml
