@@ -213,7 +213,7 @@ typedef NodeFS = {
   function readdir(path:String,cb:NodeErr->Array<String>->Void):Void;
   function close(fd:Int,cb:NodeErr->Void):Void;
   function open(path:String,flags:String,mode:Int,cb:NodeErr->Int->Void):Void;
-  function write(fd:Int,bufOrStr:Dynamic,offset:Int,length:Int,position:Null<Int>,cb:NodeErr->Int->Void):Void;
+  function write(fd:Int,bufOrStr:Dynamic,offset:Int,length:Int,position:Null<Int>,?cb:NodeErr->Int->Void):Void;
   function read(fd:Int,buffer:Buffer,offset:Int,length:Int,position:Int,cb:NodeErr->Int->Void):Void;
   function truncate(fd:Int,len:Int,cb:NodeErr->Void):Void;
   function readFile(path:String,?enc:String,cb:NodeErr->String->Void):Void;
