@@ -16,9 +16,9 @@ class Ex2 {
   public static function
   tcpTest() {
     
-    var tcp:Net = Node.net;
+    var tcp = Node.net;
     
-    var s = tcp.createServer(function(c:Stream) {
+    var s = tcp.createServer(function(c) {
         c.addListener('connect',function(d) {
             trace("got connection");
             c.write("hello\r\n");
@@ -41,9 +41,9 @@ class Ex2 {
 
   public static function
   flashCrossDomain() {
-     var tcp:Net = Node.require("net");
+     var tcp = Node.net;
     
-    var s = tcp.createServer(function(c:Stream) {
+    var s = tcp.createServer(function(c) {
         c.addListener('connect',function(d) {
             c.write('<?xml version="1.0"?>
 <!DOCTYPE cross-domain-policy
@@ -69,18 +69,17 @@ class Ex2 {
   static function
   clientTest() {
     var
-      sys:NodeSys = Node.require("sys"),
-      http:Http = Node.require("http"),
+      console = Node.console,
+      http = Node.http,
       google = http.createClient(80, "www.google.cl"),
       request = google.request("GET","/", {host: "www.google.cl"});
 
     
     request.addListener('response',function (response) {
-        sys.puts("STATUS: " + response.statusCode);
-        sys.puts("HEADERS: " + Node.stringify(response.headers));
-        response.setBodyEncoding("utf8");
+        console.log("STATUS: " + response.statusCode);
+        console.log("HEADERS: " + Node.stringify(response.headers));
         response.addListener("data", function (chunk) {
-            sys.puts("BODY: " + chunk);
+            console.log("BODY: " + chunk);
           });
       });
 

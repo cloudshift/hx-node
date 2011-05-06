@@ -6,8 +6,7 @@ class Ex1 {
       trace(Node.process.memoryUsage());
       trace(Node.process.memoryUsage().heapTotal);
 
-      var dns = Node.dns();
-      dns.resolve("ipowerhouse.com","A",function(err,ips:Array<Dynamic>) {
+      Node.dns.resolve("ipowerhouse.com","A",function(err,ips:Array<Dynamic>) {
           trace(ips);
           });
    }

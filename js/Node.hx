@@ -26,10 +26,10 @@ typedef NodeEventEmitter = {
 typedef NodeWatchOpt = {persistant:Bool,interval:Int};
 
 typedef NodeExecOpt = {
-	var encoding:String;
-	var timeout:Int;
-	var maxBuffer:Int;
-	var killSignal:String;
+  var encoding:String;
+  var timeout:Int;
+  var maxBuffer:Int;
+  var killSignal:String;
   var env:Dynamic;
   var cwd:String;
 }
@@ -41,6 +41,18 @@ typedef NodeSpawnOpt = {
   var setsid:Bool;
 }
 
+typedef NodeConsole = {
+  function log(s:String,?args:Dynamic):Void;
+  function info(s:String,?args:Dynamic):Void;
+  function warn(s:String,?args:Dynamic):Void;
+  function error(s:String,?args:Dynamic):Void;
+  function time(label:String):Void;
+  function timeEnd(label:String):Void;
+  function dir(obj:Dynamic):Void;
+  function trace():Void;
+  function assert():Void;
+}
+  
 /* 0.4.1
  */
 typedef NodePath = {
@@ -301,7 +313,7 @@ typedef NodeChildProcess = { > NodeEventEmitter,
   var stderr:NodeReadStream;
   function kill(signal:String):Void;
   function spawn(command: String,args: Array<String>,?options: Dynamic ): Void;
-	function exec(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): Void;
+  function exec(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): Void;
 }
 
 
@@ -645,25 +657,26 @@ class Node {
   public static inline var FILE_READWRITE_APPEND = "a+";
 
   public static var require(default,null) : String->Dynamic;
-	public static var querystring(default,null) : NodeQueryString;
-	public static var util(default,null) : NodeUtil;
-	public static var fs(default,null) : NodeFS;
-	public static var dgram(default,null) :NodeUDP ;
-	public static var net(default,null) : NodeNet;
-	public static var os(default,null) : NodeOs;
-	public static var http(default,null) : NodeHttp;
-	public static var https(default,null) : NodeHttps;
-	public static var path(default,null) : NodePath;
-	public static var url(default,null) : NodeUrl;
-	public static var dns(default,null) : NodeDns;
-	public static var vm(default,null) : NodeVM;
-	public static var process(default,null) : NodeProcess;
-	public static var tty(default,null) : NodeTTY;
-	public static var assert(default,null) : NodeAssert;
-	public static var crypto(default,null) : NodeCrypto;
-	public static var tls(default,null) : NodeTLS;
-	public static var repl(default,null) : NodeREPL;
+  public static var querystring(default,null) : NodeQueryString;
+  public static var util(default,null) : NodeUtil;
+  public static var fs(default,null) : NodeFS;
+  public static var dgram(default,null) :NodeUDP ;
+  public static var net(default,null) : NodeNet;
+  public static var os(default,null) : NodeOs;
+  public static var http(default,null) : NodeHttp;
+  public static var https(default,null) : NodeHttps;
+  public static var path(default,null) : NodePath;
+  public static var url(default,null) : NodeUrl;
+  public static var dns(default,null) : NodeDns;
+  public static var vm(default,null) : NodeVM;
+  public static var process(default,null) : NodeProcess;
+  public static var tty(default,null) : NodeTTY;
+  public static var assert(default,null) : NodeAssert;
+  public static var crypto(default,null) : NodeCrypto;
+  public static var tls(default,null) : NodeTLS;
+  public static var repl(default,null) : NodeREPL;
   public static var childProcess(default,null) : NodeChildProcess;
+  public static var console(default,null) : NodeConsole;
 
   
   public static var paths:String;
@@ -702,7 +715,11 @@ class Node {
     global = untyped __js__('global');
     process = untyped __js__('process');
     require = untyped __js__('require');
-
+    console = untyped __js__('console');
+    module = untyped __js__('module');  // ref to the current module
+    stringify = untyped __js__('JSON.stringify');
+    parse = untyped __js__('JSON.parse');
+   
     // just load everything, maybe not to everyone's taste
     util = require("util");
     fs = require("fs");
@@ -722,14 +739,10 @@ class Node {
     dgram = require('dgram');
     assert = require('assert');
     repl = require('repl');
-    
+ 
     var b:Dynamic = require("buffer");
     untyped js.Buffer = b.Buffer;
     
-    module = untyped __js__('module');  // ref to the current module
-    stringify = untyped __js__('JSON.stringify');
-    parse = untyped __js__('JSON.parse');
-   
   }
   
 }
