@@ -1,5 +1,5 @@
 
-bdog-node provides haxe type signatures to Node.js. 
+hx-node provides haxe type signatures to Node.js. 
 
 In this project only the files required to use the Node.js type signatures are provided.
 Previously I bundled the entire the haxe js dir, but I feel this was probably a confusion
@@ -11,21 +11,10 @@ Status
 
 The base Node API is in js/Node.hx. 
 
-API is now (more or less) at 0.1.99
-
-Note, I haven't wrapped Assert or REPL.
-Partially added Script, didn't do static methods.
-Partial Crypto.
-
-
 Compiling with haxe
 -------------------
 
-NOTE: BEGIN_SRC is for emacs orgmode source highlighting
-
 For example, file Ex1.hx
-
-#+BEGIN_SRC haxe
 
 import js.Node;
 
@@ -34,15 +23,12 @@ class Ex1 {
       trace(Node.process.memoryUsage());
       trace(Node.process.memoryUsage().heapTotal);
 
-      var dns = Node.dns();
-      dns.resolve("ipowerhouse.com","A",function(err,ips:Array<Dynamic>) {
+      Node.dns.resolve("ipowerhouse.com","A",function(err,ips:Array<Dynamic>) {
           trace(ips);
           });
    }
 
 }
-
-#+END_SRC
 
 Compile with
 
