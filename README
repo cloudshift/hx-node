@@ -50,3 +50,10 @@ Ex1.hx:6: {
 Ex1.hx:7: 5029952
 Ex1.hx:11: [204.232.203.106]
 
+
+To compile with haxelib
+
+haxe -D nodejs -lib nodejs .... etc
+
+
+

@@ -2,6 +2,7 @@
 // Compile with
 // haxe -D nodejs -cp . -js ex2.js -main Ex2
 
+
 import js.Node;
 
 class Ex2 {
