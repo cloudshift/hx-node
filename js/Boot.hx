@@ -42,7 +42,7 @@ class Boot {
 			fl.trace(msg);
 			#elseif nodejs
             msg += __string_rec(v,"");
-            Node.util.print(msg+"\n");
+            Node.console.log(msg);
             #else
 			msg += __unhtml(__string_rec(v,""))+"<br/>";
 			var d = document.getElementById("haxe:trace");

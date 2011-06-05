@@ -43,17 +43,17 @@ class Lib {
     #if !nodejs
     untyped __js__("alert")(js.Boot.__string_rec(v,""));
     #else
-    untyped js.Node.util.print(js.Boot.__string_rec(v,""));
+    untyped js.Node.console.log(js.Boot.__string_rec(v,""));
     #end
   }
-  
+
   public static function print(v:Dynamic) {
     alert(v);
   }
 
   public static function println(v:Dynamic) {
     #if nodejs
-    untyped js.Node.util.print(js.Boot.__string_rec(v,"")+"\n");
+    untyped js.Node.console.log(js.Boot.__string_rec(v,"")+"\n");
     #end
   }
 

@@ -1,7 +1,7 @@
 /* Same license as Node.js
    Maintainer: Ritchie Turner, blackdog@cloudshift.cl
 
-   This package aims to type the Node.js api without haXe embellishments.
+   Node.js api without haXe embellishments.
 */
 
 package js;
@@ -9,7 +9,7 @@ package js;
 typedef NodeListener = Dynamic;
 typedef NodeErr = Null<String>;
 
-/* 0.4.1
+/* 
    emits: newListener
  */
 typedef NodeEventEmitter = {
@@ -41,11 +41,12 @@ typedef NodeSpawnOpt = {
   var setsid:Bool;
 }
 
+/* note:can't spec multiple optional args, so adding an arbitrary 3 */
 typedef NodeConsole = {
-  function log(s:String,?args:Dynamic):Void;
-  function info(s:String,?args:Dynamic):Void;
-  function warn(s:String,?args:Dynamic):Void;
-  function error(s:String,?args:Dynamic):Void;
+  function log(s:String,?a1:Dynamic,?a2:Dynamic,?a3:Dynamic):Void;
+  function info(s:String,?a1:Dynamic,?a2:Dynamic,?a3:Dynamic):Void;
+  function warn(s:String,?a1:Dynamic,?a2:Dynamic,?a3:Dynamic):Void;
+  function error(s:String,?a1:Dynamic,?a2:Dynamic,?a3:Dynamic):Void;
   function time(label:String):Void;
   function timeEnd(label:String):Void;
   function dir(obj:Dynamic):Void;
@@ -53,8 +54,6 @@ typedef NodeConsole = {
   function assert():Void;
 }
   
-/* 0.4.1
- */
 typedef NodePath = {
   function join(?p1:String,?p2:String,?p3:String):String;
   function normalize(p:String):String;
@@ -62,12 +61,10 @@ typedef NodePath = {
   function dirname(p:String):String;
   function basename(p:String,?ext:String):String;
   function extname(p:String):String;
-  function exists(p:String,?cb:Bool->Void):Void;
+  function exists(p:String,cb:Bool->Void):Void;
   function existsSync(p:String):Bool;
 }
 
-/* 0.4.1
- */
 typedef NodeUrlObj = {
   var href:String;
   var host:String;
@@ -81,16 +78,12 @@ typedef NodeUrlObj = {
   var hash:String;
 }
 
-/* 0.4.1
- */
 typedef NodeUrl = {
   function parse(p:String,?andQueryString:Bool):NodeUrlObj;
   function format(o:NodeUrlObj):String;
   function resolve(from:Array<String>,to:String):String;
 }
 
-/* 0.4.1
- */
 typedef NodeQueryString = {
   function parse(s:String,?sep:String,?eq:String):Dynamic;
   function escape(s:String):String;
@@ -98,9 +91,7 @@ typedef NodeQueryString = {
   function stringify(obj:Dynamic,?sep:String,?eq:String):String;
 }
 
-/* 0.4.1
- */
-  @:native("Buffer") extern class Buffer implements ArrayAccess<Int> {
+@:native("Buffer") extern class Buffer implements ArrayAccess<Int> {
   function new(?p1:Dynamic,?p2:Dynamic):Void;
   var length(default,null) : Int;
   function copy(targetBuffer:Buffer,targetStart:Int,sourceStart:Int,sourceEnd:Int):Void;
@@ -111,23 +102,17 @@ typedef NodeQueryString = {
   static function byteLength(s:String,?enc:String):Int;
 }
 
-/* 0.4.1
- */
 typedef NodeScript = {
   function runInThisContext():Dynamic;
   function runInNewContext(?sandbox:Dynamic):Void;
 }
 
-/* 0.4.1
- */
 typedef NodeVM =  {  
   function runInThisContext():Dynamic;
   function runInNewContext(?sandbox:Dynamic):Void;
   function createScript(code:Dynamic,?fileName:String):NodeScript;
 }
   
-/* 0.4.1
- */
 typedef ReadStreamOpt = {
   var flags:String;
   var encoding:String;
@@ -143,7 +128,7 @@ typedef WriteStreamOpt = {
   var mode:Int;
 }
 
-/* 0.4.1
+/* 
    Emits:
    data,end,error,close,fd
 */
@@ -157,7 +142,7 @@ typedef NodeReadStream = { > NodeEventEmitter,
   function pipe(dest:NodeWriteStream,opts:{end:Bool}):Void;
 }
 
-/* 0.4.1
+/* 
    Emits:
    drain,error,close,pipe
 */
@@ -168,8 +153,6 @@ typedef NodeWriteStream = { > NodeEventEmitter,
   function destroy():Void;
 }
 
-  /* 0.4.1
- */
 typedef NodeOs = {
   function hostname():String;
   function type():String;
@@ -181,8 +164,6 @@ typedef NodeOs = {
   function cpus():Int;
 }
 
-/* 0.4.1
- */
 typedef Stat = {
   var dev:Int;
   var ino:Int;
@@ -206,8 +187,6 @@ typedef Stat = {
   function isSocket():Bool;
 }
 
-/* 0.4.1
- */
 typedef NodeFS = {
   // async
   function rename(from:String,to:String,cb:NodeErr->Void):Void;
@@ -260,9 +239,6 @@ typedef NodeFS = {
   function createWriteStream(path:String,?options:WriteStreamOpt):NodeWriteStream;  
 }
   
-
-/* 0.4.1
-*/
 typedef NodeUtil = {
   function debug(s:String):Void;
   function inspect(o:Dynamic,?showHidden:Bool,?depth:Int):Void;
@@ -271,7 +247,7 @@ typedef NodeUtil = {
   function inherits(constructor:Dynamic,superConstructor:Dynamic):Void;
 }
 
-/* 0.4.1
+/* 
   Emits:
   exit, uncaughtException
  */
@@ -302,24 +278,28 @@ typedef NodeProcess = { > NodeEventEmitter,
   
 }
 
-/* 0.4.1
+
+typedef NodeChildProcess = {
+    var stdin:NodeWriteStream;
+    var stdout:NodeReadStream;
+    var stderr:NodeReadStream;
+    var pid:Int;
+}
+
+/* 
    Emits:
    exit
 */
-typedef NodeChildProcess = { > NodeEventEmitter,
-  var pid:Int;
-  var stdin:NodeWriteStream;
-  var stdout:NodeReadStream;
-  var stderr:NodeReadStream;
+typedef NodeChildProcessCommands = { > NodeEventEmitter,
   function kill(signal:String):Void;
-  function spawn(command: String,args: Array<String>,?options: Dynamic ): Void;
-  function exec(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): Void;
+  function spawn(command: String,args: Array<String>,?options: Dynamic ) : NodeChildProcess;
+  function exec(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): NodeChildProcess;
 }
 
 
 /* NET ............................................. */
   
-/* 0.4.1
+/* 
    Emits:
    connection
 */
@@ -332,7 +312,7 @@ typedef NodeNet = { > NodeEventEmitter,
   function isIPv6(input:String):Bool;
 }
   
-/* 0.4.1
+/* 
    Emits:
    connection,close,request
 */
@@ -347,7 +327,7 @@ typedef NodeNetServer = { > NodeEventEmitter,
 }
   
 /*
-  0.4.1
+  
   Emits:
   connect,data,end,timeout,drain,error,close
 
@@ -374,7 +354,7 @@ typedef NodeNetSocket = { > NodeEventEmitter,
 /* HTTP ............................................*/
 
   
-/* 0.4.1
+/* 
    Emits:
    data,end
  */
@@ -390,7 +370,7 @@ typedef NodeHttpServerReq = {
   function resume():Void;
 }
 
-/* 0.4.1
+/* 
  */
 typedef NodeHttpServerResp = {
   var statusCode:Int;
@@ -425,7 +405,7 @@ typedef NodeHttpClient = { > NodeEventEmitter,
   function getPeerCertificate():NodePeerCert;
 }
 
-/* 0.4.1
+/* 
    Emits:
    request,connection,checkContinue,upgrade,clientError,close
  */
@@ -434,7 +414,7 @@ typedef NodeHttpServer = { > NodeEventEmitter,
   function close():Void;
 }
 
-/* 0.4.1
+/* 
  */
 typedef NodeHttpReqOpt = {
   var host:String;
@@ -444,7 +424,7 @@ typedef NodeHttpReqOpt = {
   var headers:Dynamic;
 }
 
-/* 0.4.1
+/* 
    Emits
    upgrade,continue
 */
@@ -454,8 +434,6 @@ typedef NodeAgent = { > NodeEventEmitter,
   var queue:Array<NodeHttpServerReq>;
 }
     
-/* 0.4.1
- */
 typedef NodeHttp = {
   function createServer(listener:NodeHttpServerReq->NodeHttpServerResp->Void,?options:Dynamic):NodeHttpServer;
   function createClient(port:Int,host:String):NodeHttpClient;
@@ -470,8 +448,6 @@ typedef NodeHttps = {
   function get(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):Void;
 }
   
-/* 0.4.1
- */
 typedef NodeDns = {
   function resolve(domain:String,?rrtype:String,cb:NodeErr->Array<Dynamic>->Void):Void;
   function resolve4(domain:String,cb:NodeErr->Array<String>->Void):Void;
@@ -483,8 +459,6 @@ typedef NodeDns = {
   function lookup(domain:String,?family:String,cb:NodeErr->String->Int->Void):Void;
 }
 
-/* 0.4.1
- */
 typedef NodeTTY = {
   /* returns a non homogenous array of elements, el[0].fd, el[1] is a child process obj
      best check it manually */
@@ -504,7 +478,7 @@ typedef NodeUDP = {
   function createSocket(type:String,cb:NodeUDPCallback):NodeDGSocket;
 }
 
-/* 0.4.1
+/* 
    Emits: message,listening,close
 */
 typedef NodeDGSocket = { > NodeEventEmitter,
@@ -581,12 +555,12 @@ typedef NodeCrypto = {
 
 /* TLS/SSL ................................................ */
 
-/* 0.4.1
+/* 
    Emits:
    secureConnection
 */
 typedef NodeTLSServer = NodeNetServer;
-  
+
 typedef NodeTLS ={
   function connect(port:Int,host:String,opts:Dynamic,cb:Void->Void):Void;
   function createServer(opts:Dynamic,cb:NodeTLSServer->Void):Void;
@@ -612,50 +586,51 @@ typedef NodeAssert = {
 typedef NodeREPL = {
 	function start( prompt : String, ?stream : Dynamic ) : Void;
 }
-  
-class Node {
-  // encodings ...
 
+// Node Constants
+class NodeC {
   public static inline var UTF8 = "utf8";
   public static inline var ASCII = "ascii";
   public static inline var BINARY = "binary";
-  
+
   //events - thanks tmedema
-  public static inline var EVENT_EVENTEMITTER_NEWLISTENER = "newListener";
-  public static inline var EVENT_EVENTEMITTER_ERROR = "error";
-  public static inline var EVENT_STREAM_DATA = "data";
-  public static inline var EVENT_STREAM_END = "end";
-  public static inline var EVENT_STREAM_ERROR = "error";
-  public static inline var EVENT_STREAM_CLOSE = "close";
-  public static inline var EVENT_STREAM_DRAIN = "drain";
-  public static inline var EVENT_STREAM_CONNECT = "connect";
-  public static inline var EVENT_STREAM_SECURE = "secure";
-  public static inline var EVENT_STREAM_TIMEOUT = "timeout";
-  public static inline var EVENT_PROCESS_EXIT = "exit";
-  public static inline var EVENT_PROCESS_UNCAUGHTEXCEPTION = "uncaughtException";
-  public static inline var EVENT_PROCESS_SIGINT = "SIGINT";
-  public static inline var EVENT_PROCESS_SIGUSR1 = "SIGUSR1";
-  public static inline var EVENT_CHILDPROCESS_EXIT = "exit";
-  public static inline var EVENT_HTTPSERVER_REQUEST = "request";
-  public static inline var EVENT_HTTPSERVER_CONNECTION = "connection";
-  public static inline var EVENT_HTTPSERVER_CLOSE = "close";
-  public static inline var EVENT_HTTPSERVER_UPGRADE = "upgrade";
-  public static inline var EVENT_HTTPSERVER_CLIENTERROR = "clientError";
-  public static inline var EVENT_HTTPSERVERREQUEST_DATA = "data";
-  public static inline var EVENT_HTTPSERVERREQUEST_END = "end";
-  public static inline var EVENT_CLIENTREQUEST_RESPONSE = "response";
-  public static inline var EVENT_CLIENTRESPONSE_DATA = "data";
-  public static inline var EVENT_CLIENTRESPONSE_END = "end";
-  public static inline var EVENT_NETSERVER_CONNECTION = "connection";
-  public static inline var EVENT_NETSERVER_CLOSE = "close";
+  public static var EVENT_EVENTEMITTER_NEWLISTENER = "newListener";
+	public static var EVENT_EVENTEMITTER_ERROR = "error";
+	public static var EVENT_STREAM_DATA = "data";
+	public static var EVENT_STREAM_END = "end";
+	public static var EVENT_STREAM_ERROR = "error";
+	public static var EVENT_STREAM_CLOSE = "close";
+	public static var EVENT_STREAM_DRAIN = "drain";
+	public static var EVENT_STREAM_CONNECT = "connect";
+	public static var EVENT_STREAM_SECURE = "secure";
+	public static var EVENT_STREAM_TIMEOUT = "timeout";
+	public static var EVENT_PROCESS_EXIT = "exit";
+	public static var EVENT_PROCESS_UNCAUGHTEXCEPTION = "uncaughtException";
+	public static var EVENT_PROCESS_SIGINT = "SIGINT";
+	public static var EVENT_PROCESS_SIGUSR1 = "SIGUSR1";
+	public static var EVENT_CHILDPROCESS_EXIT = "exit";
+	public static var EVENT_HTTPSERVER_REQUEST = "request";
+	public static var EVENT_HTTPSERVER_CONNECTION = "connection";
+	public static var EVENT_HTTPSERVER_CLOSE = "close";
+	public static var EVENT_HTTPSERVER_UPGRADE = "upgrade";
+	public static var EVENT_HTTPSERVER_CLIENTERROR = "clientError";
+	public static var EVENT_HTTPSERVERREQUEST_DATA = "data";
+	public static var EVENT_HTTPSERVERREQUEST_END = "end";
+	public static var EVENT_CLIENTREQUEST_RESPONSE = "response";
+	public static var EVENT_CLIENTRESPONSE_DATA = "data";
+	public static var EVENT_CLIENTRESPONSE_END = "end";
+	public static var EVENT_NETSERVER_CONNECTION = "connection";
+	public static var EVENT_NETSERVER_CLOSE = "close";
 
-  public static inline var FILE_READ = "r";
-  public static inline var FILE_READ_APPEND = "r+";
-  public static inline var FILE_WRITE = "w";
-  public static inline var FILE_WRITE_APPEND = "a+";
-  public static inline var FILE_READWRITE = "a";
-  public static inline var FILE_READWRITE_APPEND = "a+";
+	public static var FILE_READ = "r";
+	public static var FILE_READ_APPEND = "r+";
+	public static var FILE_WRITE = "w";
+	public static var FILE_WRITE_APPEND = "a+";
+	public static var FILE_READWRITE = "a";
+	public static var FILE_READWRITE_APPEND = "a+";
+}
 
+class Node {  
   public static var require(default,null) : String->Dynamic;
   public static var querystring(default,null) : NodeQueryString;
   public static var util(default,null) : NodeUtil;
@@ -675,9 +650,8 @@ class Node {
   public static var crypto(default,null) : NodeCrypto;
   public static var tls(default,null) : NodeTLS;
   public static var repl(default,null) : NodeREPL;
-  public static var childProcess(default,null) : NodeChildProcess;
+  public static var childProcess(default,null) : NodeChildProcessCommands;
   public static var console(default,null) : NodeConsole;
-
   
   public static var paths:String;
   public static var setTimeout:Dynamic->Int->Array<Dynamic>->Int;
@@ -739,7 +713,6 @@ class Node {
     dgram = require('dgram');
     assert = require('assert');
     repl = require('repl');
- 
     var b:Dynamic = require("buffer");
     untyped js.Buffer = b.Buffer;
     
