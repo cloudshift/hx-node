@@ -349,6 +349,7 @@ typedef NodeNetSocket = { > NodeEventEmitter,
   function setTimeout(timeout:Int,?cb:Void->Void):Void;
   function setNoDelay(?noDelay:Bool):Void;
   function setKeepAlive(enable:Bool,?delay:Int):Void;
+  function address():{address:String,port:Int}; 
 }
 
 /* HTTP ............................................*/
