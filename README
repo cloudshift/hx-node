@@ -1,6 +1,8 @@
 
 hx-node provides haxe type signatures to Node.js. 
 
+Find me at https://github.com/cloudshift
+
 In this project only the files required to use the Node.js type signatures are provided.
 Previously I bundled the entire the haxe js dir, but I feel this was probably a confusion
 for anyone coming from outside the haxe communtity. Other haxe integration features will
@@ -23,7 +25,7 @@ class Ex1 {
       trace(Node.process.memoryUsage());
       trace(Node.process.memoryUsage().heapTotal);
 
-      Node.dns.resolve("ipowerhouse.com","A",function(err,ips:Array<Dynamic>) {
+      Node.dns.resolve("cloudshift.cl","A",function(err,ips:Array<Dynamic>) {
           trace(ips);
           });
    }
