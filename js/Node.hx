@@ -654,7 +654,7 @@ class Node {
   public static var childProcess(default,null) : NodeChildProcessCommands;
   public static var console(default,null) : NodeConsole;
   
-  public static var paths:String;
+  public static var paths:Array<String>;
   public static var setTimeout:Dynamic->Int->Array<Dynamic>->Int;
   public static var clearTimeout:Int->Void;
   public static var setInterval:Dynamic->Int->Array<Dynamic>->Int;
