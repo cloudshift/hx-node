@@ -148,7 +148,7 @@ typedef NodeReadStream = { > NodeEventEmitter,
 */
 typedef NodeWriteStream = { > NodeEventEmitter,
   var writable:Bool;
-  function write(?d:Dynamic,?enc:String):Void;
+  function write(?d:Dynamic,?enc:String):Bool;
   function end(?s:Dynamic,?enc:String):Void; // string or buffer
   function destroy():Void;
 }
@@ -279,7 +279,7 @@ typedef NodeProcess = { > NodeEventEmitter,
 }
 
 
-typedef NodeChildProcess = {
+typedef NodeChildProcess = { > NodeEventEmitter,
     var stdin:NodeWriteStream;
     var stdout:NodeReadStream;
     var stderr:NodeReadStream;
