@@ -108,9 +108,9 @@ typedef NodeScript = {
 }
 
 typedef NodeVM =  {  
-  function runInThisContext():Dynamic;
-  function runInNewContext(?sandbox:Dynamic):Void;
-  function createScript(code:Dynamic,?fileName:String):NodeScript;
+    function runInThisContext(code:String,?fileName:String):Dynamic;
+    function runInNewContext(?sandbox:Dynamic):Void;
+    function createScript(code:Dynamic,?fileName:String):NodeScript;
 }
   
 typedef ReadStreamOpt = {
@@ -385,11 +385,18 @@ typedef NodeHttpServerResp = {
   function write(chunk:String,?enc:String):Void;  
 }
 
+/* Emits:
+   continue,response
+*/
 typedef NodeHttpClientReq = { > NodeEventEmitter,
-  function sendBody(chunk:String,?enc:String):Void;
-  function end():Void;
+  function write(data:Dynamic,?enc:String):Void;
+  function end(?data:Dynamic,?enc:String):Void;
+  function abort():Void;
 }
 
+/* Emits:
+   data,end,close
+*/
 typedef NodeHttpClientResp = { > NodeEventEmitter,
   var statusCode:Int;
   var httpVersion:String;
@@ -399,6 +406,7 @@ typedef NodeHttpClientResp = { > NodeEventEmitter,
   function resume():Void;
   function pause():Void;  
 }
+
 
 typedef NodeHttpClient = { > NodeEventEmitter,
   function request(method:String,path:String,?headers:Dynamic):NodeHttpClientReq;
@@ -438,7 +446,7 @@ typedef NodeAgent = { > NodeEventEmitter,
 typedef NodeHttp = {
   function createServer(listener:NodeHttpServerReq->NodeHttpServerResp->Void,?options:Dynamic):NodeHttpServer;
   function createClient(port:Int,host:String):NodeHttpClient;
-  function request(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):Void;
+  function request(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):NodeHttpClientReq;
   function get(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):Void;
   function getAgent(host:String,port:Int):NodeAgent;
 }

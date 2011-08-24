@@ -43,21 +43,10 @@ class Lib {
     #if !nodejs
     untyped __js__("alert")(js.Boot.__string_rec(v,""));
     #else
-    untyped js.Node.console.log(js.Boot.__string_rec(v,""));
+    js.Node.console.log(js.Boot.__string_rec(v,""));
     #end
   }
 
-  public static function print(v:Dynamic) {
-    alert(v);
-  }
-
-  public static function println(v:Dynamic) {
-    #if nodejs
-    untyped js.Node.console.log(js.Boot.__string_rec(v,"")+"\n");
-    #end
-  }
-
- 
   public static function eval( code : String ) : Dynamic {
     return untyped __js__("eval")(code);
   }
@@ -67,12 +56,11 @@ class Lib {
   }
   
 	static function __init__() untyped {
-#if !nodejs
-    
-      document = untyped __js__("document");
+    #if !nodejs
+    document = untyped __js__("document");
 	  window = untyped __js__("window");
-#end
-        #if debug
+    #end
+    #if debug
 __js__('onerror = function(msg,url,line) {
 		var stack = $s.copy();
 		var f = js.Lib.onerror;

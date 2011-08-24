@@ -41,9 +41,9 @@ class Boot {
 			msg += __string_rec(v,"");
 			fl.trace(msg);
 			#elseif nodejs
-            msg += __string_rec(v,"");
-            Node.console.log(msg);
-            #else
+       msg += __string_rec(v,"");
+      Node.console.log(msg);
+      #else
 			msg += __unhtml(__string_rec(v,""))+"<br/>";
 			var d = document.getElementById("haxe:trace");
 			if( d == null )
@@ -243,11 +243,11 @@ class Boot {
 					}
 				}
 			};
-			var cca = String.prototype.charCodeAt;
-			String.prototype.cca = cca;
+			if( String.prototype.cca == null )
+				String.prototype.cca = String.prototype.charCodeAt;
 			String.prototype.charCodeAt = function(i) {
-				var x = cca.call(this,i);
-				if( isNaN(x) )
+				var x = this.cca(i);
+				if( x != x ) // fast isNaN
 					return null;
 				return x;
 			};
