@@ -139,7 +139,7 @@ typedef NodeReadStream = { > NodeEventEmitter,
   function destroy():Void;
   function destroySoon():Void;
   function setEncoding(enc:String):Void;
-  function pipe(dest:NodeWriteStream,opts:{end:Bool}):Void;
+  function pipe(dest:NodeWriteStream,?opts:{end:Bool}):Void;
 }
 
 /* 
@@ -380,9 +380,7 @@ typedef NodeHttpServerResp = { > NodeWriteStream,
   function setHeader(name:String,value:Dynamic):Void;
   function getHeader(name:String):Dynamic;
   function removeHeader(name:String):Void;
-  function end(?data:Dynamic,?enc:String):Void;
   function addTrailers(headers:Dynamic):Void;
-  function write(chunk:String,?enc:String):Void;  
 }
 
 /* Emits:
