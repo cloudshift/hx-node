@@ -1,0 +1,3 @@
+#!/bin/bash
+
+zip -x *.git* -q -X -r nodejs.zip .

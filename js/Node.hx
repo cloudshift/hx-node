@@ -373,7 +373,7 @@ typedef NodeHttpServerReq = {
 
 /* 
  */
-typedef NodeHttpServerResp = {
+typedef NodeHttpServerResp = { > NodeWriteStream,
   var statusCode:Int;
   function writeContinue():Void;
   function writeHead(statusCode:Int,?reasonPhrase:String,headers:Dynamic):Void;
