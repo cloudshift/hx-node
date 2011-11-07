@@ -263,6 +263,14 @@ class Boot {
 				}
 				return oldsub.apply(__this__,[pos,len]);
 			};
+			Function.prototype["$bind"] = function(o){ 
+				var f = function(){ 
+					return f.method.apply(f.scope, arguments); 
+				}
+				f.scope = o;
+				f.method = __this__;
+				return f;
+			};
 			__js__("$closure = js.Boot.__closure");
 		}
 	}
