@@ -1,7 +1,8 @@
 /* Same license as Node.js
    Maintainer: Ritchie Turner, blackdog@cloudshift.cl
 
-   Node.js api without haXe embellishments.
+   Node.js 0.6 api without haXe embellishments.
+   
 */
 
 package js;
@@ -334,7 +335,7 @@ typedef NodeUtil = {
   function isRegExp(o:Dynamic):Bool;
   function isDate(o:Dynamic):Bool;
   function isError(o:Dynamic):Bool;
-  // todo format(), can't specify multiple params
+  function format(out:String,?a1:Dynamic,?a2:Dynamic,?a3:Dynamic):Void; // should be arbitrary # of args
 }
 
 /* 

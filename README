@@ -1,4 +1,6 @@
 
+Upgraded for NodeJs 0.6
+
 hx-node provides haxe type signatures to Node.js. 
 
 Find me at https://github.com/cloudshift
@@ -55,7 +57,7 @@ Ex1.hx:11: [204.232.203.106]
 
 To compile with haxelib
 
-haxe -D nodejs -lib nodejs .... etc
+haxe -lib nodejs .... etc
 
 
 
