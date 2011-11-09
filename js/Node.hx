@@ -230,56 +230,95 @@ typedef NodeStat = {
   function isSocket():Bool;
 }
 
+/*
+  Emits: error,change
+ */
+typedef NodeFSWatcher = { > NodeEventEmitter,
+   function close():Void;
+}
+
 typedef NodeFS = {
-  // async
   function rename(from:String,to:String,cb:NodeErr->Void):Void;
-  function stat(path:String,cb:NodeErr->NodeStat->Void):Void;
-  function fstat(fd:Int,cb:NodeErr->NodeStat->Void):Void;
-  function lstat(path:Dynamic,cb:NodeErr->NodeStat->Void):Void;
-  function link(srcPath:String,dstPath:String,cb:NodeErr->Void):Void;
-  function unlink(path:String,cn:NodeErr->Void):Void;
-  function symlink(linkData:Dynamic,path:String,cb:NodeErr->Void):Void;
-  function readlink(path:String,cb:NodeErr->String->Void):Void;
-  function realpath(path:String,cb:NodeErr->String->Void):Void;
-  function chmod(path:String,mode:Int,cb:NodeErr->Void):Void;
-  function rmdir(path:String,cb:NodeErr->Void):Void;
-  function mkdir(path:String,mode:Int,cb:NodeErr->Void):Void;
-  function readdir(path:String,cb:NodeErr->Array<String>->Void):Void;
-  function close(fd:Int,cb:NodeErr->Void):Void;
-  function open(path:String,flags:String,mode:Int,cb:NodeErr->Int->Void):Void;
-  function write(fd:Int,bufOrStr:Dynamic,offset:Int,length:Int,position:Null<Int>,?cb:NodeErr->Int->Void):Void;
-  function read(fd:Int,buffer:Buffer,offset:Int,length:Int,position:Int,cb:NodeErr->Int->Void):Void;
-  function truncate(fd:Int,len:Int,cb:NodeErr->Void):Void;
-  function readFile(path:String,?enc:String,cb:NodeErr->String->Void):Void;
-  function writeFile(fileName:String,contents:String,cb:NodeErr->Void):Void;
-  function chown(path:String,uid:Int,gid:Int,cb:NodeErr->Void):Void ;
-  function lchown(path:String,uid:Int,gid:Int,cb:NodeErr->Void):Void ;
-  
-  // sync
   function renameSync(from:String,to:String):Void;
+  
+  function stat(path:String,cb:NodeErr->NodeStat->Void):Void;
   function statSync(path:String):NodeStat;
+
+  function lstat(path:Dynamic,cb:NodeErr->NodeStat->Void):Void;
+  function lstatSync(path:String):NodeStat;
+  
+  function fstat(fd:Int,cb:NodeErr->NodeStat->Void):Void;
   function fstatSync(fd:Int):NodeStat;
-  function lstatSync(path:Dynamic):NodeStat; // path or fd
+  
+  function link(srcPath:String,dstPath:String,cb:NodeErr->Void):Void;
   function linkSync(srcPath:String,dstPath:String):Void;
+
+  function unlink(path:String,cn:NodeErr->Void):Void;
   function unlinkSync(path:String):Void;
+  
+  function symlink(linkData:Dynamic,path:String,cb:NodeErr->Void):Void;
   function symlinkSync(linkData:Dynamic,path:String):Void;
+  
+  function readlink(path:String,cb:NodeErr->String->Void):Void;
   function readlinkSync(path:String):String;
+  
+  function realpath(path:String,cb:NodeErr->String->Void):Void;
   function realpathSync(path:String):String;
+  
+  function chmod(path:String,mode:Int,cb:NodeErr->Void):Void;
   function chmodSync(path:String,?mode:Int):Void;
-  function rmdirSync(path:String):Void;
-  function mkdirSync(path:String,mode:Int):Void;
-  function readdirSync(path:String):Array<String>;
-  function closeSync(fd:Int):Void;
-  function openSync(path:String,flags:String,?mode:Int):Int;
-  function writeSync(fd:Int,bufOrStr:Dynamic,offset:Int,length:Int,position:Null<Int>):Int;
-  function readSync(fd:Int,buffer:Buffer,offset:Int,length:Int,position:Int):Int;
-  function truncateSync(fd:Int,len:Int):NodeErr;  
-  function readFileSync(path:String,?enc:String):String;
-  function writeFileSync(fileName:String,contents:String,?enc:String):Void;
+
+  function fchmod(fd:Int,mode:Int,cb:NodeErr->Void):Void;
+  function fchmodSync(fd:Int,?mode:Int):Void;
+
+  function chown(path:String,uid:Int,gid:Int,cb:NodeErr->Void):Void ;
   function chownSync(path:String,uid:Int,gid:Int):Void;
-  // other
+  
+  function fchown(fd:Int,uid:Int,gid:Int,cb:NodeErr->Void):Void ;
+  function fchownSync(fd:Int,uid:Int,gid:Int):Void;
+
+  function rmdir(path:String,cb:NodeErr->Void):Void;
+  function rmdirSync(path:String):Void;
+  
+  function mkdir(path:String,mode:Int,cb:NodeErr->Void):Void;
+  function mkdirSync(path:String,mode:Int):Void;
+  
+  function readdir(path:String,cb:NodeErr->Array<String>->Void):Void;
+  function readdirSync(path:String):Array<String>;
+  
+  function close(fd:Int,cb:NodeErr->Void):Void;
+  function closeSync(fd:Int):Void;
+  
+  function open(path:String,flags:String,mode:Int,cb:NodeErr->Int->Void):Void;
+  function openSync(path:String,flags:String,?mode:Int):Int;
+  
+  function write(fd:Int,bufOrStr:Dynamic,offset:Int,length:Int,position:Null<Int>,?cb:NodeErr->Int->Void):Void;
+  function writeSync(fd:Int,bufOrStr:Dynamic,offset:Int,length:Int,position:Null<Int>):Int;
+  
+  function read(fd:Int,buffer:Buffer,offset:Int,length:Int,position:Int,cb:NodeErr->Int->Void):Void;
+  function readSync(fd:Int,buffer:Buffer,offset:Int,length:Int,position:Int):Int;
+  
+  function truncate(fd:Int,len:Int,cb:NodeErr->Void):Void;
+  function truncateSync(fd:Int,len:Int):NodeErr;
+  
+  function readFile(path:String,?enc:String,cb:NodeErr->String->Void):Void;
+  function readFileSync(path:String,?enc:String):String;
+
+  function writeFile(fileName:String,contents:String,cb:NodeErr->Void):Void;
+  function writeFileSync(fileName:String,contents:String,?enc:String):Void;
+
+  function utimes(path:String,atime:Dynamic,mtime:Dynamic,cb:NodeErr->Void):Void;
+  function utimeSync(path:String,atime:Dynamic,mtime:Dynamic):Void;
+
+  function futimes(fd:Int,atime:Dynamic,mtime:Dynamic,cb:NodeErr->Void):Void;
+  function futimeSync(fd:Int,atime:Dynamic,mtime:Dynamic):Void;
+
+  function fsync(fd:Int,cb:NodeErr->Void):Void;
+  function fsyncSync(fd:Int):Void;
+  
   function watchFile(fileName:String,?options:NodeWatchOpt,listener:NodeStat->NodeStat->Void):Void;
   function unwatchFile(fileName:String):Void;
+  function watch(fileName:String,?options:NodeWatchOpt,listener:String->String):NodeFSWatcher;
   function createReadStream(path:String,?options:ReadStreamOpt):NodeReadStream;
   function createWriteStream(path:String,?options:WriteStreamOpt):NodeWriteStream;  
 }
