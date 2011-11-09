@@ -361,6 +361,17 @@ typedef NodeChildProcessCommands = { > NodeEventEmitter,
     
 }
 
+/*
+  Emits: death,message
+*/
+typedef NodeCluster = { > NodeEventEmitter,
+  function fork():Void;
+  function isMaster():Bool;
+  function isWorker():Bool;
+  function send(o:Dynamic):Void;  
+  
+}
+
 
 /* NET ............................................. */
   
@@ -698,12 +709,19 @@ typedef NodeZLib = {
     function createUnzip(?options:Dynamic):NodeUnzip;
 
     // convenience
+    @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
     function deflate(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
     function deflateRaw(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
     function gzip(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
     function gunzip(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
     function inflate(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
     function inflateRaw(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
     function unzip(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
 }
 
@@ -772,6 +790,7 @@ class Node {
   public static var repl(default,null) : NodeREPL;
   public static var childProcess(default,null) : NodeChildProcessCommands;
   public static var console(default,null) : NodeConsole;
+  public static var cluster(default,null) : NodeCluster;
   
   //  public static var paths:Array<String>;
   public static var setTimeout:Dynamic->Int->Array<Dynamic>->Int;
@@ -829,6 +848,8 @@ class Node {
     repl = require('repl');
     var b:Dynamic = require("buffer");
     untyped js.Buffer = b.Buffer;
+
+    cluster = require("cluster");
   }
   
 }
