@@ -94,12 +94,49 @@ typedef NodeQueryString = {
 @:native("Buffer") extern class Buffer implements ArrayAccess<Int> {
   function new(?p1:Dynamic,?p2:Dynamic):Void;
   var length(default,null) : Int;
+  var INSPECT_MAX_BYTES:Int;
+  
   function copy(targetBuffer:Buffer,targetStart:Int,sourceStart:Int,sourceEnd:Int):Void;
   function slice(start:Int,end:Int):Buffer;
-  function write(s:String,?offset:Int,?enc:String):Void;
-  function toString(enc:String,?start:Int,?stop:Int):String;
+  function write(s:String,?offset:Int,?length:Int,?enc:String):Void;
+  function toString(enc:String,?start:Int,?end:Int):String;
+  function fill(value:Float,offset:Int,?end:Int):Void;
   static function isBuffer(o:Dynamic):Bool;
   static function byteLength(s:String,?enc:String):Int;
+
+  function readUInt8(offset:Int,?noAssert:Bool):Int;
+  function readUInt16LE(offset:Int,?noAssert:Bool):Int;
+  function readUInt16BE(offset:Int,?noAssert:Bool):Int;
+  function readUInt32LE(offset:Int,?noAssert:Bool):Int;
+  function readUInt32BE(offset:Int,?noAssert:Bool):Int;
+
+  function readInt8(offset:Int,?noAssert:Bool):Int;
+  function readInt16LE(offset:Int,?noAssert:Bool):Int;
+  function readInt16BE(offset:Int,?noAssert:Bool):Int;
+  function readInt32LE(offset:Int,?noAssert:Bool):Int;
+  function readInt32BE(offset:Int,?noAssert:Bool):Int;
+
+  function readFloatLE(offset:Int,?noAssert:Bool):Float;
+  function readFloatBE(offset:Int,?noAssert:Bool):Float;
+  function readDoubleLE(offset:Int,?noAssert:Bool):Float; // is this right?
+  function readDoubleBE(offset:Int,?noAssert:Bool):Float; // is this right?
+
+  function writeUInt8(value:Int,offset:Int,?noAssert:Bool):Void;
+  function writeUInt16LE(value:Int,offset:Int,?noAssert:Bool):Void;
+  function writeUInt16BE(value:Int,offset:Int,?noAssert:Bool):Void;
+  function writeUInt32LE(value:Int,offset:Int,?noAssert:Bool):Void;
+  function writeUInt32BE(value:Int,offset:Int,?noAssert:Bool):Void;
+
+  function writeInt8(value:Int,offset:Int,?noAssert:Bool):Void;
+  function writeInt16LE(value:Int,offset:Int,?noAssert:Bool):Void;
+  function writeInt16BE(value:Int,offset:Int,?noAssert:Bool):Void;
+  function writeInt32LE(value:Int,offset:Int,?noAssert:Bool):Void;
+  function writeInt32BE(value:Int,offset:Int,?noAssert:Bool):Void;
+
+  function writeFloatLE(value:Float,offset:Int,?noAssert:Bool):Void;
+  function writeFloatBE(value:Float,offset:Int,?noAssert:Bool):Void;
+  function writeDoubleLE(value:Float,offset:Int,?noAssert:Bool):Void; // is this right?
+  function writeDoubleBE(value:Float,offset:Int,?noAssert:Bool):Void; // is this right?
 }
 
 typedef NodeScript = {
@@ -148,9 +185,12 @@ typedef NodeReadStream = { > NodeEventEmitter,
 */
 typedef NodeWriteStream = { > NodeEventEmitter,
   var writable:Bool;
-  function write(?d:Dynamic,?enc:String):Bool;
-  function end(?s:Dynamic,?enc:String):Void; // string or buffer
+  @:overload(function(chunk:Buffer):Bool {})
+  function write(d:String,?enc:String,?fd:Int):Bool;
+  @:overload(function(b:Buffer):Void {})
+  function end(?s:String,?enc:String):Void;
   function destroy():Void;
+  function destroySoon():Void;
 }
 
 typedef NodeOs = {
@@ -162,9 +202,12 @@ typedef NodeOs = {
   function totalmem():Int;
   function freemem():Int;
   function cpus():Int;
+  function platform():String;
+  function arch():String;
+  function networkInterfaces():Dynamic;
 }
 
-typedef Stat = {
+typedef NodeStat = {
   var dev:Int;
   var ino:Int;
   var mode:Int;
@@ -190,9 +233,9 @@ typedef Stat = {
 typedef NodeFS = {
   // async
   function rename(from:String,to:String,cb:NodeErr->Void):Void;
-  function stat(path:String,cb:NodeErr->Stat->Void):Void;
-  function fstat(fd:Int,cb:NodeErr->Stat->Void):Void;
-  function lstat(path:Dynamic,cb:NodeErr->Stat->Void):Void;
+  function stat(path:String,cb:NodeErr->NodeStat->Void):Void;
+  function fstat(fd:Int,cb:NodeErr->NodeStat->Void):Void;
+  function lstat(path:Dynamic,cb:NodeErr->NodeStat->Void):Void;
   function link(srcPath:String,dstPath:String,cb:NodeErr->Void):Void;
   function unlink(path:String,cn:NodeErr->Void):Void;
   function symlink(linkData:Dynamic,path:String,cb:NodeErr->Void):Void;
@@ -210,11 +253,13 @@ typedef NodeFS = {
   function readFile(path:String,?enc:String,cb:NodeErr->String->Void):Void;
   function writeFile(fileName:String,contents:String,cb:NodeErr->Void):Void;
   function chown(path:String,uid:Int,gid:Int,cb:NodeErr->Void):Void ;
+  function lchown(path:String,uid:Int,gid:Int,cb:NodeErr->Void):Void ;
+  
   // sync
   function renameSync(from:String,to:String):Void;
-  function statSync(path:String):Stat;
-  function fstatSync(fd:Int):Stat;
-  function lstatSync(path:Dynamic):Stat; // path or fd
+  function statSync(path:String):NodeStat;
+  function fstatSync(fd:Int):NodeStat;
+  function lstatSync(path:Dynamic):NodeStat; // path or fd
   function linkSync(srcPath:String,dstPath:String):Void;
   function unlinkSync(path:String):Void;
   function symlinkSync(linkData:Dynamic,path:String):Void;
@@ -233,7 +278,7 @@ typedef NodeFS = {
   function writeFileSync(fileName:String,contents:String,?enc:String):Void;
   function chownSync(path:String,uid:Int,gid:Int):Void;
   // other
-  function watchFile(fileName:String,?options:NodeWatchOpt,listener:Stat->Stat->Void):Void;
+  function watchFile(fileName:String,?options:NodeWatchOpt,listener:NodeStat->NodeStat->Void):Void;
   function unwatchFile(fileName:String):Void;
   function createReadStream(path:String,?options:ReadStreamOpt):NodeReadStream;
   function createWriteStream(path:String,?options:WriteStreamOpt):NodeWriteStream;  
@@ -245,11 +290,16 @@ typedef NodeUtil = {
   function log(s:String):Void;
   function pump(rs:NodeReadStream,ws:NodeWriteStream,cb:Dynamic->Void):Void;
   function inherits(constructor:Dynamic,superConstructor:Dynamic):Void;
+  function isArray(o:Dynamic):Bool;
+  function isRegExp(o:Dynamic):Bool;
+  function isDate(o:Dynamic):Bool;
+  function isError(o:Dynamic):Bool;
+  // todo format()
 }
 
 /* 
   Emits:
-  exit, uncaughtException
+  exit, uncaughtException + SIGNAL events (SIGINT etc)
  */
 typedef NodeProcess = { > NodeEventEmitter,
   var stdout:NodeWriteStream;
@@ -259,10 +309,12 @@ typedef NodeProcess = { > NodeEventEmitter,
   var env:Dynamic;
   var pid:Int;
   var title:String;
+  var arch:String;
   var platform:String;
   var installPrefix:String;
   var execPath:String;
   var version:String;
+  var versions:Dynamic;
   
   function memoryUsage():{rss:Int,vsize:Int,heapUsed:Int,heapTotal:Int};
   function nextTick(fn:Void->Void):Void;
@@ -275,15 +327,25 @@ typedef NodeProcess = { > NodeEventEmitter,
   function umask(?m:Int):Void;
   function chdir(d:String):Void;
   function kill(pid:Int,?signal:String):Void;
+  function uptime():Int;
   
 }
 
-
+/*
+  Emits: exit
+*/
 typedef NodeChildProcess = { > NodeEventEmitter,
     var stdin:NodeWriteStream;
     var stdout:NodeReadStream;
     var stderr:NodeReadStream;
     var pid:Int;
+}
+
+/*
+  Emits: message
+*/
+typedef NodeChildForkProcess = { > NodeChildProcess,
+   function send(o:Dynamic):Void;  
 }
 
 /* 
@@ -294,6 +356,9 @@ typedef NodeChildProcessCommands = { > NodeEventEmitter,
   function kill(signal:String):Void;
   function spawn(command: String,args: Array<String>,?options: Dynamic ) : NodeChildProcess;
   function exec(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): NodeChildProcess;
+  function execFile(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): NodeChildProcess;
+  function fork(path:String,args:Dynamic,?options:Dynamic):NodeChildForkProcess;
+    
 }
 
 
@@ -304,9 +369,12 @@ typedef NodeChildProcessCommands = { > NodeEventEmitter,
    connection
 */
 typedef NodeNet = { > NodeEventEmitter, 
-  function createServer(fn:NodeNetSocket->Void):NodeNetServer;
+  function createServer(?options:{allowHalfOpen:Bool},fn:NodeNetSocket->Void):NodeNetServer;
+  @:overload(function(cs:String):NodeNetSocket {})
   function createConnection(port:Int,host:String):NodeNetSocket;
-  // TODO function createConnection(path:String):Void;
+  @:overload(function(cs:String):NodeNetSocket {})
+  function connect(port:Int,host:String):NodeNetSocket;
+                    
   function isIP(input:String):Int; // 4 or 6
   function isIPv4(input:String):Bool;
   function isIPv6(input:String):Bool;
@@ -314,18 +382,20 @@ typedef NodeNet = { > NodeEventEmitter,
   
 /* 
    Emits:
-   connection,close,request
+   connection,close,request,listening
 */
 typedef NodeNetServer = { > NodeEventEmitter,
   var maxConnections:Int;
   var connections:Int;
+
+  @:overload(function(path:String,?cb:Void->Void):Void {})
   function listen(port:Int,?host:String,?cb:Void->Void):Void;
-  // TODO function listen(path:String,cb:Void->Void):Void;
   function listenFD(fd:Int):Void;
   function close():Void;
   function address():Void;
+  function pause(msecs:Int):Void;
 }
-  
+
 /*
   
   Emits:
@@ -335,13 +405,16 @@ typedef NodeNetServer = { > NodeEventEmitter,
 */
 typedef NodeNetSocket = { > NodeEventEmitter, 
   var remoteAddress:String;
+  var remotePort:Int;
   var bufferSize:Int;
+  var bytesRead:Int;
+  var bytesWritten:Int;
+  @:overload(function(path:String,?cb:Void->Void):Void {})
   function connect(port:Int,?host:String,?cb:Void->Void):Void;
-  //TODO function connect(path,cb:Void->Void):Void;
   function setEncoding(enc:String):Void;
   function setSecure():Void;
+  @:overload(function(data:Dynamic,?enc:String,?fileDesc:Int,?cb:Void->Void):Bool {})
   function write(data:Dynamic,?enc:String,?cb:Void->Void):Bool;
-  // TODO write(data:Dynamic,?enc:String,?fileDesc:Int,?cb:Void->Void):Bool;
   function end(?data:Dynamic,?enc:String):Void;
   function destroy():Void;
   function pause():Void;
@@ -357,7 +430,7 @@ typedef NodeNetSocket = { > NodeEventEmitter,
   
 /* 
    Emits:
-   data,end
+   data,end,close
  */
 typedef NodeHttpServerReq = {
   var method:String;
@@ -376,7 +449,7 @@ typedef NodeHttpServerReq = {
 typedef NodeHttpServerResp = { > NodeWriteStream,
   var statusCode:Int;
   function writeContinue():Void;
-  function writeHead(statusCode:Int,?reasonPhrase:String,headers:Dynamic):Void;
+  function writeHead(statusCode:Int,?reasonPhrase:String,?headers:Dynamic):Void;
   function setHeader(name:String,value:Dynamic):Void;
   function getHeader(name:String):Dynamic;
   function removeHeader(name:String):Void;
@@ -417,6 +490,7 @@ typedef NodeHttpClient = { > NodeEventEmitter,
    request,connection,checkContinue,upgrade,clientError,close
  */
 typedef NodeHttpServer = { > NodeEventEmitter,
+  @:overload(function(path:String,?cb:Void->Void):Void {})
   function listen(port:Int,?host:String,?cb:Void->Void):Void;
   function close():Void;
 }
@@ -432,7 +506,7 @@ typedef NodeHttpReqOpt = {
 }
 
 /* 
-   Emits
+   Emits:
    upgrade,continue
 */
 typedef NodeAgent = { > NodeEventEmitter,
@@ -457,10 +531,12 @@ typedef NodeHttps = {
   
 typedef NodeDns = {
   function resolve(domain:String,?rrtype:String,cb:NodeErr->Array<Dynamic>->Void):Void;
+  function resolveNs(domain:String,cb:NodeErr->Array<Dynamic>->Void):Void;
   function resolve4(domain:String,cb:NodeErr->Array<String>->Void):Void;
   function resolve6(domain:String,cb:NodeErr->Array<String>->Void):Void;
   function resolveMx(domain:String,cb:NodeErr->Array<{priority:Int,exchange:String}>->Void):Void;
   function resolveSrv(domain:String,cb:NodeErr->Array<{priority:Int,weight:Int,port:Int,name:String}->Void>):Void;
+  function resolveCname(domain:String,cb:NodeErr->Array<String>->Void):Void;
   function reverse(ip:String,cb:NodeErr->Array<String>->Void):Void;
   function resolveTxt(domain:String,cb:NodeErr->Array<String>->Void):Void;
   function lookup(domain:String,?family:String,cb:NodeErr->String->Int->Void):Void;
@@ -566,11 +642,20 @@ typedef NodeCrypto = {
    Emits:
    secureConnection
 */
-typedef NodeTLSServer = NodeNetServer;
+typedef NodeTLSServer =  { > NodeNetServer,
+    function addContext(hostName:String,credentials:NodeCreds):Void;
+
+}
+
+/* Emits: secure */
+typedef NodeSecurePair = { > NodeEventEmitter,
+                           // ?? todo
+}
 
 typedef NodeTLS ={
   function connect(port:Int,host:String,opts:Dynamic,cb:Void->Void):Void;
   function createServer(opts:Dynamic,cb:NodeTLSServer->Void):Void;
+  function createSecurePair(creds:NodeCreds,isServer:Bool,requestCert:Bool,rejectUnauthorized:Bool):NodeSecurePair;
 }
 
 /*
@@ -592,6 +677,34 @@ typedef NodeAssert = {
 
 typedef NodeREPL = {
 	function start( prompt : String, ?stream : Dynamic ) : Void;
+}
+
+typedef NodeGZip = {}
+typedef NodeGUnzip = {}
+typedef NodeDeflate = {}
+typedef NodeInflate = {}
+typedef NodeDeflateRaw = {}
+typedef NodeInflateRaw = {}
+typedef NodeUnzip = {}
+
+
+typedef NodeZLib = {
+    function createGzip(?options:Dynamic):NodeGZip;
+    function createGunzip(?options:Dynamic):NodeGUnzip;
+    function createDeflate(?options:Dynamic):NodeDeflate;
+    function createInflate(?options:Dynamic):NodeInflate;
+    function createInflateRaw(?options:Dynamic):NodeInflateRaw;
+    function createDeflateRaw(?options:Dynamic):NodeDeflateRaw;
+    function createUnzip(?options:Dynamic):NodeUnzip;
+
+    // convenience
+    function deflate(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    function deflateRaw(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    function gzip(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    function gunzip(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    function inflate(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    function inflateRaw(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    function unzip(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
 }
 
 // Node Constants
@@ -660,7 +773,7 @@ class Node {
   public static var childProcess(default,null) : NodeChildProcessCommands;
   public static var console(default,null) : NodeConsole;
   
-  public static var paths:Array<String>;
+  //  public static var paths:Array<String>;
   public static var setTimeout:Dynamic->Int->Array<Dynamic>->Int;
   public static var clearTimeout:Int->Void;
   public static var setInterval:Dynamic->Int->Array<Dynamic>->Int;
@@ -673,22 +786,16 @@ class Node {
   public static var stringify:Dynamic->String;
   public static var parse:String->Dynamic;
   public static var queryString:NodeQueryString;
-
-  /* deprecated */
-  public static function
-  newBuffer(d:Dynamic,?enc:String):Buffer {
-    var b = require('buffer');
-    if (enc != null)
-      return untyped __js__('new b.Buffer(d,enc)');
-    else
-      return untyped __js__('new b.Buffer(d)');
+  
+  public static function newSocket(?options):NodeNetSocket {
+    return untyped __js__("new js.Node.net.Socket(options)");
   }
-
+  
   public static function
   __init__() {
     __filename = untyped __js__('__filename');
     __dirname = untyped __js__('__dirname');
-    paths = untyped  __js__('require.paths');
+
     setTimeout = untyped __js__('setTimeout');
     clearTimeout = untyped __js__('clearTimeout');
     setInterval = untyped __js__('setInterval');
@@ -722,7 +829,6 @@ class Node {
     repl = require('repl');
     var b:Dynamic = require("buffer");
     untyped js.Buffer = b.Buffer;
-    
   }
   
 }
