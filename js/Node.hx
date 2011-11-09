@@ -156,7 +156,7 @@ typedef ReadStreamOpt = {
   var fd:Null<Int>;
   var mode:Int;
   var bufferSize:Int;
-  //TODO start:Int, end:Int
+  //TODO start:Int, end:Int // these are optional, I guess use Reflect.setField
 }
 
 typedef WriteStreamOpt = {
@@ -221,6 +221,7 @@ typedef NodeStat = {
   var atime:String;
   var mtime:String;
   var ctime:String;
+  
   function isFile():Bool;
   function isDirectory():Bool;
   function isBlockDevice():Bool;
@@ -333,7 +334,7 @@ typedef NodeUtil = {
   function isRegExp(o:Dynamic):Bool;
   function isDate(o:Dynamic):Bool;
   function isError(o:Dynamic):Bool;
-  // todo format()
+  // todo format(), can't specify multiple params
 }
 
 /* 
@@ -388,8 +389,7 @@ typedef NodeChildForkProcess = { > NodeChildProcess,
 }
 
 /* 
-   Emits:
-   exit
+   Emits: exit
 */
 typedef NodeChildProcessCommands = { > NodeEventEmitter,
   function kill(signal:String):Void;
@@ -397,7 +397,6 @@ typedef NodeChildProcessCommands = { > NodeEventEmitter,
   function exec(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): NodeChildProcess;
   function execFile(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): NodeChildProcess;
   function fork(path:String,args:Dynamic,?options:Dynamic):NodeChildForkProcess;
-    
 }
 
 /*
@@ -408,7 +407,6 @@ typedef NodeCluster = { > NodeEventEmitter,
   function isMaster():Bool;
   function isWorker():Bool;
   function send(o:Dynamic):Void;  
-  
 }
 
 
@@ -423,8 +421,7 @@ typedef NodeNet = { > NodeEventEmitter,
   @:overload(function(cs:String):NodeNetSocket {})
   function createConnection(port:Int,host:String):NodeNetSocket;
   @:overload(function(cs:String):NodeNetSocket {})
-  function connect(port:Int,host:String):NodeNetSocket;
-                    
+  function connect(port:Int,host:String):NodeNetSocket;                    
   function isIP(input:String):Int; // 4 or 6
   function isIPv4(input:String):Bool;
   function isIPv6(input:String):Bool;
@@ -459,6 +456,7 @@ typedef NodeNetSocket = { > NodeEventEmitter,
   var bufferSize:Int;
   var bytesRead:Int;
   var bytesWritten:Int;
+                          
   @:overload(function(path:String,?cb:Void->Void):Void {})
   function connect(port:Int,?host:String,?cb:Void->Void):Void;
   function setEncoding(enc:String):Void;
@@ -615,10 +613,8 @@ typedef NodeUDP = {
    Emits: message,listening,close
 */
 typedef NodeDGSocket = { > NodeEventEmitter,
-  //TODO function send(buf, offset, length, path, [callback])
   function send(buf:Buffer,offset:Int,length:Int,port:Int,address:String,cb:NodeUDPCallback):Void;
-  function bind(path:String):Void;
-  //function bind(port:Int,?address:String):Void;
+  function bind(port:Int,?address:String):Void;
   function close():Void;
   function address():Dynamic;
   function setBroadcast(flag:Bool):Void;
@@ -699,7 +695,7 @@ typedef NodeTLSServer =  { > NodeNetServer,
 
 /* Emits: secure */
 typedef NodeSecurePair = { > NodeEventEmitter,
-                           // ?? todo
+   // ?? todo
 }
 
 typedef NodeTLS ={
@@ -769,6 +765,7 @@ class NodeC {
   public static inline var UTF8 = "utf8";
   public static inline var ASCII = "ascii";
   public static inline var BINARY = "binary";
+  public static inline var BASE64 = "base64";
 
   //events - thanks tmedema
   public static var EVENT_EVENTEMITTER_NEWLISTENER = "newListener";
