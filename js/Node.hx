@@ -365,12 +365,13 @@ typedef NodeProcess = { > NodeEventEmitter,
   function getgid():Int;
   function setuid(u:Int):Void;
   function setgid(g:Int):Void;
-  function umask(?m:Int):Void;
+  function umask(?m:Int):Int;
   function chdir(d:String):Void;
   function kill(pid:Int,?signal:String):Void;
   function uptime():Int;
   
 }
+
 
 /*
   Emits: exit
