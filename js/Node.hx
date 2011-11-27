@@ -306,7 +306,7 @@ typedef NodeFS = {
   function readFile(path:String,?enc:String,cb:NodeErr->String->Void):Void;
   function readFileSync(path:String,?enc:String):String;
 
-  function writeFile(fileName:String,contents:String,cb:NodeErr->Void):Void;
+  function writeFile(fileName:String,contents:String,?enc:String,cb:NodeErr->Void):Void;
   function writeFileSync(fileName:String,contents:String,?enc:String):Void;
 
   function utimes(path:String,atime:Dynamic,mtime:Dynamic,cb:NodeErr->Void):Void;
