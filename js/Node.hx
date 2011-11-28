@@ -391,10 +391,7 @@ typedef NodeChildForkProcess = { > NodeChildProcess,
    function send(o:Dynamic):Void;  
 }
 
-/* 
-   Emits: exit
-*/
-typedef NodeChildProcessCommands = { > NodeEventEmitter,
+typedef NodeChildProcessCommands = { 
   function spawn(command: String,args: Array<String>,?options: Dynamic ) : NodeChildProcess;
   function exec(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): NodeChildProcess;
   function execFile(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): NodeChildProcess;
