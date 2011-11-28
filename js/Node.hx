@@ -381,6 +381,7 @@ typedef NodeChildProcess = { > NodeEventEmitter,
     var stdout:NodeReadStream;
     var stderr:NodeReadStream;
     var pid:Int;
+    function kill(signal:String):Void;
 }
 
 /*
@@ -394,7 +395,6 @@ typedef NodeChildForkProcess = { > NodeChildProcess,
    Emits: exit
 */
 typedef NodeChildProcessCommands = { > NodeEventEmitter,
-  function kill(signal:String):Void;
   function spawn(command: String,args: Array<String>,?options: Dynamic ) : NodeChildProcess;
   function exec(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): NodeChildProcess;
   function execFile(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): NodeChildProcess;
