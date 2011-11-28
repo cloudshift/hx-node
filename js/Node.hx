@@ -769,6 +769,7 @@ class NodeC {
   //events - thanks tmedema
   public static var EVENT_EVENTEMITTER_NEWLISTENER = "newListener";
 	public static var EVENT_EVENTEMITTER_ERROR = "error";
+
 	public static var EVENT_STREAM_DATA = "data";
 	public static var EVENT_STREAM_END = "end";
 	public static var EVENT_STREAM_ERROR = "error";
@@ -777,7 +778,9 @@ class NodeC {
 	public static var EVENT_STREAM_CONNECT = "connect";
 	public static var EVENT_STREAM_SECURE = "secure";
 	public static var EVENT_STREAM_TIMEOUT = "timeout";
-	public static var EVENT_PROCESS_EXIT = "exit";
+  public static var EVENT_STREAM_PIPE = "pipe";
+  
+  public static var EVENT_PROCESS_EXIT = "exit";
 	public static var EVENT_PROCESS_UNCAUGHTEXCEPTION = "uncaughtException";
 	public static var EVENT_PROCESS_SIGINT = "SIGINT";
 	public static var EVENT_PROCESS_SIGUSR1 = "SIGUSR1";
