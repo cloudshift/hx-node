@@ -185,7 +185,7 @@ typedef NodeReadStream = { > NodeEventEmitter,
    drain,error,close,pipe
 */
 typedef NodeWriteStream = { > NodeEventEmitter,
-  var writable:Bool;
+  var writeable:Bool;
   @:overload(function(chunk:Buffer):Bool {})
   function write(d:String,?enc:String,?fd:Int):Bool;
   @:overload(function(b:Buffer):Void {})
