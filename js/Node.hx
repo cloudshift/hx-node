@@ -479,7 +479,7 @@ typedef NodeNetSocket = { > NodeEventEmitter,
    Emits:
    data,end,close
  */
-typedef NodeHttpServerReq = {
+typedef NodeHttpServerReq = { >NodeEventEmitter,
   var method:String;
   var url:String;
   var headers:Dynamic;
@@ -493,7 +493,7 @@ typedef NodeHttpServerReq = {
 
 /* 
  */
-typedef NodeHttpServerResp = { > NodeWriteStream,
+typedef NodeHttpServerResp = { > NodeWriteStream, 
   var statusCode:Int;
   function writeContinue():Void;
   function writeHead(statusCode:Int,?reasonPhrase:String,?headers:Dynamic):Void;
@@ -765,6 +765,7 @@ class NodeC {
   public static inline var ASCII = "ascii";
   public static inline var BINARY = "binary";
   public static inline var BASE64 = "base64";
+  public static inline var HEX = "hex";
 
   //events - thanks tmedema
   public static var EVENT_EVENTEMITTER_NEWLISTENER = "newListener";

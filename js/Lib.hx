@@ -46,6 +46,10 @@ class Lib {
     js.Node.console.log(js.Boot.__string_rec(v,""));
     #end
   }
+  
+  public static function print( v : Dynamic ) {
+    trace(v);
+  }
 
   public static function eval( code : String ) : Dynamic {
     return untyped __js__("eval")(code);
