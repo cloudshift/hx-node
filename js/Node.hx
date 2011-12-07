@@ -402,9 +402,9 @@ typedef NodeChildProcessCommands = {
   Emits: death,message
 */
 typedef NodeCluster = { > NodeEventEmitter,
+  var isMaster:Bool;
+  var isWorker:Bool;
   function fork():Void;
-  function isMaster():Bool;
-  function isWorker():Bool;
   function send(o:Dynamic):Void;  
 }
 
