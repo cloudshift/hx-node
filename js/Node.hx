@@ -92,13 +92,17 @@ typedef NodeQueryString = {
   function stringify(obj:Dynamic,?sep:String,?eq:String):String;
 }
 
-@:native("Buffer") extern class Buffer implements ArrayAccess<Int> {
-  function new(?p1:Dynamic,?p2:Dynamic):Void;
+@:native("Buffer") extern class NodeBuffer implements ArrayAccess<Int> {
+
+   @:overload(function(str:String,enc:String):Void {})
+   @:overload(function(arr:Array<Int>):Void {})
+  function new(size:Int):Void;
+
   var length(default,null) : Int;
   var INSPECT_MAX_BYTES:Int;
   
-  function copy(targetBuffer:Buffer,targetStart:Int,sourceStart:Int,sourceEnd:Int):Void;
-  function slice(start:Int,end:Int):Buffer;
+  function copy(targetBuffer:NodeBuffer,targetStart:Int,sourceStart:Int,sourceEnd:Int):Void;
+  function slice(start:Int,end:Int):NodeBuffer;
   function write(s:String,?offset:Int,?length:Int,?enc:String):Void;
   function toString(enc:String,?start:Int,?end:Int):String;
   function fill(value:Float,offset:Int,?end:Int):Void;
@@ -186,9 +190,9 @@ typedef NodeReadStream = { > NodeEventEmitter,
 */
 typedef NodeWriteStream = { > NodeEventEmitter,
   var writeable:Bool;
-  @:overload(function(chunk:Buffer):Bool {})
+  @:overload(function(chunk:NodeBuffer):Bool {})
   function write(d:String,?enc:String,?fd:Int):Bool;
-  @:overload(function(b:Buffer):Void {})
+  @:overload(function(b:NodeBuffer):Void {})
   function end(?s:String,?enc:String):Void;
   function destroy():Void;
   function destroySoon():Void;
@@ -297,8 +301,8 @@ typedef NodeFS = {
   function write(fd:Int,bufOrStr:Dynamic,offset:Int,length:Int,position:Null<Int>,?cb:NodeErr->Int->Void):Void;
   function writeSync(fd:Int,bufOrStr:Dynamic,offset:Int,length:Int,position:Null<Int>):Int;
   
-  function read(fd:Int,buffer:Buffer,offset:Int,length:Int,position:Int,cb:NodeErr->Int->Void):Void;
-  function readSync(fd:Int,buffer:Buffer,offset:Int,length:Int,position:Int):Int;
+  function read(fd:Int,buffer:NodeBuffer,offset:Int,length:Int,position:Int,cb:NodeErr->Int->Void):Void;
+  function readSync(fd:Int,buffer:NodeBuffer,offset:Int,length:Int,position:Int):Int;
   
   function truncate(fd:Int,len:Int,cb:NodeErr->Void):Void;
   function truncateSync(fd:Int,len:Int):NodeErr;
@@ -371,7 +375,6 @@ typedef NodeProcess = { > NodeEventEmitter,
   function uptime():Int;
   
 }
-
 
 /*
   Emits: exit
@@ -612,7 +615,7 @@ typedef NodeUDP = {
    Emits: message,listening,close
 */
 typedef NodeDGSocket = { > NodeEventEmitter,
-  function send(buf:Buffer,offset:Int,length:Int,port:Int,address:String,cb:NodeUDPCallback):Void;
+  function send(buf:NodeBuffer,offset:Int,length:Int,port:Int,address:String,cb:NodeUDPCallback):Void;
   function bind(port:Int,?address:String):Void;
   function close():Void;
   function address():Dynamic;
@@ -744,19 +747,19 @@ typedef NodeZLib = {
 
     // convenience
     @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
-    function deflate(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    function deflate(buf:NodeBuffer,cb:NodeErr->Dynamic->Void):Void;
     @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
-    function deflateRaw(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    function deflateRaw(buf:NodeBuffer,cb:NodeErr->Dynamic->Void):Void;
     @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
-    function gzip(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    function gzip(buf:NodeBuffer,cb:NodeErr->Dynamic->Void):Void;
     @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
-    function gunzip(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    function gunzip(buf:NodeBuffer,cb:NodeErr->Dynamic->Void):Void;
     @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
-    function inflate(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    function inflate(buf:NodeBuffer,cb:NodeErr->Dynamic->Void):Void;
     @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
-    function inflateRaw(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    function inflateRaw(buf:NodeBuffer,cb:NodeErr->Dynamic->Void):Void;
     @:overload(function (str:String,cb:NodeErr->Dynamic->Void):Void {})
-    function unzip(buf:Buffer,cb:NodeErr->Dynamic->Void):Void;
+    function unzip(buf:NodeBuffer,cb:NodeErr->Dynamic->Void):Void;
 }
 
 // Node Constants
@@ -884,8 +887,6 @@ class Node {
     dgram = require('dgram');
     assert = require('assert');
     repl = require('repl');
-    var b:Dynamic = require("buffer");
-    untyped js.Buffer = b.Buffer;
 
     cluster = require("cluster");
   }
