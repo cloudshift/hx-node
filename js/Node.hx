@@ -172,7 +172,7 @@ typedef WriteStreamOpt = {
 
 /* 
    Emits:
-   data,end,error,close,fd
+   data,end,error,close
 */
 typedef NodeReadStream = { > NodeEventEmitter,
   var readable:Bool;
@@ -295,13 +295,14 @@ typedef NodeFS = {
   function close(fd:Int,cb:NodeErr->Void):Void;
   function closeSync(fd:Int):Void;
   
-  function open(path:String,flags:String,mode:Int,cb:NodeErr->Int->Void):Void;
+  function open(path:String,flags:String,?mode:Int,cb:NodeErr->Int->Void):Void;
+  
   function openSync(path:String,flags:String,?mode:Int):Int;
   
   function write(fd:Int,bufOrStr:Dynamic,offset:Int,length:Int,position:Null<Int>,?cb:NodeErr->Int->Void):Void;
   function writeSync(fd:Int,bufOrStr:Dynamic,offset:Int,length:Int,position:Null<Int>):Int;
   
-  function read(fd:Int,buffer:NodeBuffer,offset:Int,length:Int,position:Int,cb:NodeErr->Int->Void):Void;
+  function read(fd:Int,buffer:NodeBuffer,offset:Int,length:Int,position:Int,cb:NodeErr->Int->NodeBuffer->Void):Void;
   function readSync(fd:Int,buffer:NodeBuffer,offset:Int,length:Int,position:Int):Int;
   
   function truncate(fd:Int,len:Int,cb:NodeErr->Void):Void;
@@ -888,7 +889,6 @@ class Node {
     dgram = require('dgram');
     assert = require('assert');
     repl = require('repl');
-
     cluster = require("cluster");
   }
   
