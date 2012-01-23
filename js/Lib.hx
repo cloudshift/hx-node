@@ -48,7 +48,7 @@ class Lib {
   }
   
   public static function print( v : Dynamic ) {
-    trace(v);
+    untyped __js__('console.log(v)');
   }
 
   public static function eval( code : String ) : Dynamic {
