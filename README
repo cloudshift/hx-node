@@ -1,19 +1,14 @@
 
-Upgraded for NodeJs 0.6
+hx-node provides haxe type signatures to Node.js 0.6x.
 
-hx-node provides haxe type signatures to Node.js. 
+The base Node API is in js/Node.hx.
 
-Find me at https://github.com/cloudshift
+There are no abstractions or wrappers just the raw api, this allows you to
+implement wrappers on top to your own taste. For example, I've wrapped basic
+functionality with futures and map strings events to enums here
+https://github.com/cloudshift/Sys.
 
-In this project only the files required to use the Node.js type signatures are provided.
-Previously I bundled the entire the haxe js dir, but I feel this was probably a confusion
-for anyone coming from outside the haxe communtity. Other haxe integration features will
-be bundled in separate libs.
-
-Status
-------
-
-The base Node API is in js/Node.hx. 
+Also find on haxelib as "nodejs".
 
 Compiling with haxe
 -------------------
