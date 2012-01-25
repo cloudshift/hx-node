@@ -836,9 +836,11 @@ class Node {
   public static var cluster(default,null) : NodeCluster;
   
   //  public static var paths:Array<String>;
-  public static var setTimeout:Dynamic->Int->Array<Dynamic>->Int;
+  @:overload(function (cb:Dynamic, delay:Int, ?args :Array<Dynamic>):Int {})
+  public static var setTimeout:Dynamic->Int->Int;
   public static var clearTimeout:Int->Void;
-  public static var setInterval:Dynamic->Int->Array<Dynamic>->Int;
+  @:overload(function (cb:Dynamic, delay:Int, ?args :Array<Dynamic>):Int {})
+  public static var setInterval:Dynamic->Int->Int;
   public static var clearInterval:Int->Void;  
   public static var global:Dynamic;
   
