@@ -2,4 +2,9 @@
 
 zip \
     --exclude \*.git/\* \
+    --exclude js/node/\* \
+    --exclude Makefile \
+    --exclude \*.js \
+    --exclude build \
+    --exclude eproject.cfg \
     -r nodejs.zip .
