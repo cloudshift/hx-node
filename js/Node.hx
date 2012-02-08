@@ -772,43 +772,43 @@ class NodeC {
   public static inline var HEX = "hex";
 
   //events - thanks tmedema
-  public static var EVENT_EVENTEMITTER_NEWLISTENER = "newListener";
-	public static var EVENT_EVENTEMITTER_ERROR = "error";
+  public static inline var EVENT_EVENTEMITTER_NEWLISTENER = "newListener";
+	public static inline var EVENT_EVENTEMITTER_ERROR = "error";
 
-	public static var EVENT_STREAM_DATA = "data";
-	public static var EVENT_STREAM_END = "end";
-	public static var EVENT_STREAM_ERROR = "error";
-	public static var EVENT_STREAM_CLOSE = "close";
-	public static var EVENT_STREAM_DRAIN = "drain";
-	public static var EVENT_STREAM_CONNECT = "connect";
-	public static var EVENT_STREAM_SECURE = "secure";
-	public static var EVENT_STREAM_TIMEOUT = "timeout";
-  public static var EVENT_STREAM_PIPE = "pipe";
+	public static inline var EVENT_STREAM_DATA = "data";
+	public static inline var EVENT_STREAM_END = "end";
+	public static inline var EVENT_STREAM_ERROR = "error";
+	public static inline var EVENT_STREAM_CLOSE = "close";
+	public static inline var EVENT_STREAM_DRAIN = "drain";
+	public static inline var EVENT_STREAM_CONNECT = "connect";
+	public static inline var EVENT_STREAM_SECURE = "secure";
+	public static inline var EVENT_STREAM_TIMEOUT = "timeout";
+  public static inline var EVENT_STREAM_PIPE = "pipe";
   
-  public static var EVENT_PROCESS_EXIT = "exit";
-	public static var EVENT_PROCESS_UNCAUGHTEXCEPTION = "uncaughtException";
-	public static var EVENT_PROCESS_SIGINT = "SIGINT";
-	public static var EVENT_PROCESS_SIGUSR1 = "SIGUSR1";
-	public static var EVENT_CHILDPROCESS_EXIT = "exit";
-	public static var EVENT_HTTPSERVER_REQUEST = "request";
-	public static var EVENT_HTTPSERVER_CONNECTION = "connection";
-	public static var EVENT_HTTPSERVER_CLOSE = "close";
-	public static var EVENT_HTTPSERVER_UPGRADE = "upgrade";
-	public static var EVENT_HTTPSERVER_CLIENTERROR = "clientError";
-	public static var EVENT_HTTPSERVERREQUEST_DATA = "data";
-	public static var EVENT_HTTPSERVERREQUEST_END = "end";
-	public static var EVENT_CLIENTREQUEST_RESPONSE = "response";
-	public static var EVENT_CLIENTRESPONSE_DATA = "data";
-	public static var EVENT_CLIENTRESPONSE_END = "end";
-	public static var EVENT_NETSERVER_CONNECTION = "connection";
-	public static var EVENT_NETSERVER_CLOSE = "close";
+  public static inline var EVENT_PROCESS_EXIT = "exit";
+	public static inline var EVENT_PROCESS_UNCAUGHTEXCEPTION = "uncaughtException";
+	public static inline var EVENT_PROCESS_SIGINT = "SIGINT";
+	public static inline var EVENT_PROCESS_SIGUSR1 = "SIGUSR1";
+	public static inline var EVENT_CHILDPROCESS_EXIT = "exit";
+	public static inline var EVENT_HTTPSERVER_REQUEST = "request";
+	public static inline var EVENT_HTTPSERVER_CONNECTION = "connection";
+	public static inline var EVENT_HTTPSERVER_CLOSE = "close";
+	public static inline var EVENT_HTTPSERVER_UPGRADE = "upgrade";
+	public static inline var EVENT_HTTPSERVER_CLIENTERROR = "clientError";
+	public static inline var EVENT_HTTPSERVERREQUEST_DATA = "data";
+	public static inline var EVENT_HTTPSERVERREQUEST_END = "end";
+	public static inline var EVENT_CLIENTREQUEST_RESPONSE = "response";
+	public static inline var EVENT_CLIENTRESPONSE_DATA = "data";
+	public static inline var EVENT_CLIENTRESPONSE_END = "end";
+	public static inline var EVENT_NETSERVER_CONNECTION = "connection";
+	public static inline var EVENT_NETSERVER_CLOSE = "close";
 
-	public static var FILE_READ = "r";
-	public static var FILE_READ_APPEND = "r+";
-	public static var FILE_WRITE = "w";
-	public static var FILE_WRITE_APPEND = "a+";
-	public static var FILE_READWRITE = "a";
-	public static var FILE_READWRITE_APPEND = "a+";
+	public static inline var FILE_READ = "r";
+	public static inline var FILE_READ_APPEND = "r+";
+	public static inline var FILE_WRITE = "w";
+	public static inline var FILE_WRITE_APPEND = "a+";
+	public static inline var FILE_READWRITE = "a";
+	public static inline var FILE_READWRITE_APPEND = "a+";
 }
 
 class Node {  
