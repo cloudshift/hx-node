@@ -3,6 +3,7 @@
 zip \
     --exclude \*.git/\* \
     --exclude js/node/\* \
+    --exclude haxe/\* \
     --exclude Makefile \
     --exclude \*.js \
     --exclude build \
