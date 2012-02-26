@@ -94,7 +94,7 @@ typedef NodeQueryString = {
 
 @:native("Buffer") extern class NodeBuffer implements ArrayAccess<Int> {
 
-   @:overload(function(str:String,enc:String):Void {})
+   @:overload(function(str:String,?enc:String):Void {})
    @:overload(function(arr:Array<Int>):Void {})
   function new(size:Int):Void;
 
