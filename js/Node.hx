@@ -24,7 +24,7 @@ typedef NodeEventEmitter = {
   function emit(event:String,?arg1:Dynamic,?arg2:Dynamic,?arg3:Dynamic):Void;
 }
 
-typedef NodeWatchOpt = {persistant:Bool,interval:Int};
+typedef NodeWatchOpt = {persistent:Bool,interval:Int};
 
 typedef NodeExecOpt = {
   var encoding:String;
@@ -325,7 +325,7 @@ typedef NodeFS = {
   
   function watchFile(fileName:String,?options:NodeWatchOpt,listener:NodeStat->NodeStat->Void):Void;
   function unwatchFile(fileName:String):Void;
-  function watch(fileName:String,?options:NodeWatchOpt,listener:String->String):NodeFSWatcher;
+  function watch(fileName:String,?options:NodeWatchOpt,listener:String->String->Void):NodeFSWatcher;
   function createReadStream(path:String,?options:ReadStreamOpt):NodeReadStream;
   function createWriteStream(path:String,?options:WriteStreamOpt):NodeWriteStream;  
 }
