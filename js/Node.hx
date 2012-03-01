@@ -103,7 +103,7 @@ typedef NodeQueryString = {
   
   function copy(targetBuffer:NodeBuffer,targetStart:Int,sourceStart:Int,sourceEnd:Int):Void;
   function slice(start:Int,end:Int):NodeBuffer;
-  function write(s:String,?offset:Int,?length:Int,?enc:String):Void;
+  function write(s:String,?offset:Int,?length:Int,?enc:String):Int;
   function toString(enc:String,?start:Int,?end:Int):String;
   function fill(value:Float,offset:Int,?end:Int):Void;
   static function isBuffer(o:Dynamic):Bool;
