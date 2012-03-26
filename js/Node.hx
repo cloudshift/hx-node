@@ -286,8 +286,8 @@ typedef NodeFS = {
   function rmdir(path:String,cb:NodeErr->Void):Void;
   function rmdirSync(path:String):Void;
   
-  function mkdir(path:String,mode:Int,cb:NodeErr->Void):Void;
-  function mkdirSync(path:String,mode:Int):Void;
+  function mkdir(path:String,?mode:Int,?cb:NodeErr->Void):Void;
+  function mkdirSync(path:String,?mode:Int):Void;
   
   function readdir(path:String,cb:NodeErr->Array<String>->Void):Void;
   function readdirSync(path:String):Array<String>;
