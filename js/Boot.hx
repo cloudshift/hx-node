@@ -33,7 +33,7 @@ class Boot {
 	private static function __unhtml(s : String) {
 		return s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
 	}
-
+	
 	private static function __trace(v,i : haxe.PosInfos) {
 		untyped {
 			var msg = if( i != null ) i.fileName+":"+i.lineNumber+": " else "";
@@ -41,15 +41,15 @@ class Boot {
 			msg += __string_rec(v,"");
 			fl.trace(msg);
 			#elseif nodejs
-       msg += __string_rec(v,"");
-      Node.console.log(msg);
-      #else
-			msg += __unhtml(__string_rec(v,""))+"<br/>";
+			msg += __string_rec(v,"");
+			Node.console.log(msg);
+			#else
+			msg += __string_rec(v,"");
 			var d = document.getElementById("haxe:trace");
-			if( d == null )
-				alert("No haxe:trace element defined\n"+msg);
-			else
-				d.innerHTML += msg;
+			if( d != null )
+				d.innerHTML += __unhtml(msg)+"<br/>";
+			else if( __js__("typeof")(console) != "undefined" && console.log != null )
+				console.log(msg);
 			#end
 		}
 	}
