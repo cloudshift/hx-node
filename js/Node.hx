@@ -567,7 +567,7 @@ typedef NodeAgent = { > NodeEventEmitter,
 }
     
 typedef NodeHttp = {
-  function createServer(listener:NodeHttpServerReq->NodeHttpServerResp->Void,?options:Dynamic):NodeHttpServer;
+  function createServer(listener:NodeHttpServerReq->NodeHttpServerResp->Void):NodeHttpServer;
   function createClient(port:Int,host:String):NodeHttpClient;
   function request(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):NodeHttpClientReq;
   function get(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):Void;
@@ -575,7 +575,8 @@ typedef NodeHttp = {
 }
   
 typedef NodeHttps = {
-  function createServer(options:{key:String,cert:String},listener:NodeHttpServerReq->NodeHttpServerResp->Void):NodeHttpServer;
+  function createServer(options:{key:String,cert:String},
+                        listener:NodeHttpServerReq->NodeHttpServerResp->Void):NodeHttpServer;
   function request(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):Void;
   function get(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):Void;
 }
@@ -700,7 +701,6 @@ typedef NodeTLSServer =  { > NodeNetServer,
 typedef NodeSecurePair = { > NodeEventEmitter,
    // ?? todo
 }
-
 typedef NodeTLS ={
   function connect(port:Int,host:String,opts:Dynamic,cb:Void->Void):Void;
   function createServer(opts:Dynamic,cb:NodeTLSServer->Void):Void;
