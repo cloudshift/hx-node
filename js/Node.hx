@@ -1,8 +1,10 @@
 /* Same license as Node.js
    Maintainer: Ritchie Turner, blackdog@cloudshift.cl
 
-   Node.js 0.6 api without haXe embellishments.
-   
+   Node.js 0.8 api without haXe embellishments so that other apis may be implemented
+   on top without being hindered by design choices here.
+
+   Domain not added.
 */
 
 package js;
@@ -62,6 +64,8 @@ typedef NodePath = {
   function dirname(p:String):String;
   function basename(p:String,?ext:String):String;
   function extname(p:String):String;
+
+  /* deprecated 0.8, use NodeFs equivs instead */
   function exists(p:String,cb:Bool->Void):Void;
   function existsSync(p:String):Bool;
 }
@@ -86,7 +90,7 @@ typedef NodeUrl = {
 }
 
 typedef NodeQueryString = {
-  function parse(s:String,?sep:String,?eq:String):Dynamic;
+  function parse(s:String,?sep:String,?eq:String,?options:{maxKeys:Int}):Dynamic;
   function escape(s:String):String;
   function unescape(s:String):String;
   function stringify(obj:Dynamic,?sep:String,?eq:String):String;
@@ -156,12 +160,13 @@ typedef NodeVM =  {
 }
   
 typedef ReadStreamOpt = {
-  var flags:String;
-  var encoding:String;
-  var fd:Null<Int>;
-  var mode:Int;
-  var bufferSize:Int;
-  //TODO start:Int, end:Int // these are optional, I guess use Reflect.setField
+    flags:String,
+    encoding:String,
+    fd:Null<Int>,
+    mode:Int,
+    bufferSize:Int,
+    ?start:Int,
+    ?end:Int
 }
 
 typedef WriteStreamOpt = {
@@ -262,8 +267,8 @@ typedef NodeFS = {
   function unlink(path:String,cn:NodeErr->Void):Void;
   function unlinkSync(path:String):Void;
   
-  function symlink(linkData:Dynamic,path:String,cb:NodeErr->Void):Void;
-  function symlinkSync(linkData:Dynamic,path:String):Void;
+  function symlink(linkData:Dynamic,path:String,?type:String,?cb:NodeErr->Void):Void;
+  function symlinkSync(linkData:Dynamic,path:String,?type:String):Void;
   
   function readlink(path:String,cb:NodeErr->String->Void):Void;
   function readlinkSync(path:String):String;
@@ -311,9 +316,18 @@ typedef NodeFS = {
   function readFile(path:String,?enc:String,cb:NodeErr->String->Void):Void;
   function readFileSync(path:String,?enc:String):String;
 
-  function writeFile(fileName:String,contents:Dynamic,?enc:String,cb:NodeErr->Void):Void;
-  function writeFileSync(fileName:String,contents:Dynamic,?enc:String):Void;
+  @:overload(function(fileName:String,data:NodeBuffer,cb:NodeErr->Void):Void {})
+  function writeFile(fileName:String,contents:String,?enc:String,cb:NodeErr->Void):Void;
+  @:overload(function(fileName:String,data:NodeBuffer):Void {})
+  function writeFileSync(fileName:String,contents:String,?enc:String):Void;
 
+  @:overload(function(fileName:String,data:NodeBuffer,cb:NodeErr->Void):Void {})
+  function appendFile(fileName:String,contents:String,?enc:String,cb:NodeErr->Void):Void;
+
+  @:overload(function(fileName:String,data:NodeBuffer):Void {})
+  function appendFileSync(fileName:String,contents:String,?enc:String):Void;
+
+  
   function utimes(path:String,atime:Dynamic,mtime:Dynamic,cb:NodeErr->Void):Void;
   function utimeSync(path:String,atime:Dynamic,mtime:Dynamic):Void;
 
@@ -327,7 +341,10 @@ typedef NodeFS = {
   function unwatchFile(fileName:String):Void;
   function watch(fileName:String,?options:NodeWatchOpt,listener:String->String->Void):NodeFSWatcher;
   function createReadStream(path:String,?options:ReadStreamOpt):NodeReadStream;
-  function createWriteStream(path:String,?options:WriteStreamOpt):NodeWriteStream;  
+  function createWriteStream(path:String,?options:WriteStreamOpt):NodeWriteStream;
+
+  function exists(p:String,cb:Bool->Void):Void;
+  function existsSync(p:String):Bool;
 }
   
 typedef NodeUtil = {
@@ -374,11 +391,12 @@ typedef NodeProcess = { > NodeEventEmitter,
   function chdir(d:String):Void;
   function kill(pid:Int,?signal:String):Void;
   function uptime():Int;
-  
+  function abort():Void;
+  function hrtime():Array<Int>;
 }
 
 /*
-  Emits: exit
+  Emits: exit,close
 */
 typedef NodeChildProcess = { > NodeEventEmitter,
     var stdin:NodeWriteStream;
@@ -392,24 +410,42 @@ typedef NodeChildProcess = { > NodeEventEmitter,
   Emits: message
 */
 typedef NodeChildForkProcess = { > NodeChildProcess,
-   function send(o:Dynamic):Void;  
+     @:overload(function(o:Dynamic,?socket:NodeNetSocket):Void {})
+     function send(o:Dynamic,?server:NodeNetServer):Void;  
 }
 
 typedef NodeChildProcessCommands = { 
   function spawn(command: String,args: Array<String>,?options: Dynamic ) : NodeChildProcess;
   function exec(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): NodeChildProcess;
   function execFile(command: String,?options:Dynamic,cb: {code:Int}->String->String->Void ): NodeChildProcess;
-  function fork(path:String,args:Dynamic,?options:Dynamic):NodeChildForkProcess;
+  function fork(path:String,?args:Dynamic,?options:Dynamic):NodeChildForkProcess;
 }
 
-/*
-  Emits: death,message
-*/
+typedef NodeClusterSettings = {
+    var exec:String;
+    var args:Array<String>;
+    var silent:Bool;
+}
+
+
+/* emits: message, online,listening,disconnect,exit, setup */
+typedef NodeWorker = { > NodeEventEmitter,
+    var uniqueID:String; // indexes into cluster.workers
+    var process:NodeChildProcess;
+    var suicide:Bool;
+    function send(message:Dynamic,?sendHandle:Dynamic):Void;
+    function destroy():Void;
+}
+
+/* Emits: death,message, fork, online, listening  */
 typedef NodeCluster = { > NodeEventEmitter,
   var isMaster:Bool;
   var isWorker:Bool;
-  function fork():Void;
-  function send(o:Dynamic):Void;  
+  var workers:Array<NodeWorker>;
+  function fork(?env:Dynamic):NodeWorker;
+  function send(o:Dynamic):Void;
+  function setupMaster(?settings:NodeClusterSettings):Void;
+  function disconnect(?cb:Void->Void):Void;
 }
 
 
@@ -432,18 +468,24 @@ typedef NodeNet = { > NodeEventEmitter,
   
 /* 
    Emits:
-   connection,close,request,listening
+   connection,close,error,listening
 */
 typedef NodeNetServer = { > NodeEventEmitter,
   var maxConnections:Int;
   var connections:Int;
 
   @:overload(function(path:String,?cb:Void->Void):Void {})
+  @:overload(function(fd:Int,?cb:Void->Void):Void {})                        
   function listen(port:Int,?host:String,?cb:Void->Void):Void;
-  function listenFD(fd:Int):Void;
-  function close():Void;
+  function close(cb:Void->Void):Void;
   function address():Void;
   function pause(msecs:Int):Void;
+}
+
+typedef NodeConnectionOpt = {
+    port:Int,
+    ?host:String,
+    ?localAddress:String
 }
 
 /*
@@ -461,6 +503,7 @@ typedef NodeNetSocket = { > NodeEventEmitter,
   var bytesWritten:Int;
                           
   @:overload(function(path:String,?cb:Void->Void):Void {})
+  @:overload(function(options:NodeConnectionOpt,connectionListener:Void->Void):Void {})
   function connect(port:Int,?host:String,?cb:Void->Void):Void;
   function setEncoding(enc:String):Void;
   function setSecure():Void;
@@ -538,12 +581,12 @@ typedef NodeHttpClient = { > NodeEventEmitter,
 
 /* 
    Emits:
-   request,connection,checkContinue,upgrade,clientError,close
+   request,connection,checkContinue,connect,clientError,close
  */
 typedef NodeHttpServer = { > NodeEventEmitter,
   @:overload(function(path:String,?cb:Void->Void):Void {})
   function listen(port:Int,?host:String,?cb:Void->Void):Void;
-  function close():Void;
+  function close(?cb:Void->Void):Void;
 }
 
 /* 
@@ -554,6 +597,11 @@ typedef NodeHttpReqOpt = {
   var path:String;
   var method:String;
   var headers:Dynamic;
+}
+
+typedef NodeHttpsReqOpt =  { > NodeHttpReqOpt,
+   var ciphers:Dynamic;
+   var rejectUnauthorized:Dynamic;
 }
 
 /* 
@@ -569,7 +617,9 @@ typedef NodeAgent = { > NodeEventEmitter,
 typedef NodeHttp = {
   function createServer(listener:NodeHttpServerReq->NodeHttpServerResp->Void):NodeHttpServer;
   function createClient(port:Int,host:String):NodeHttpClient;
+  @:overload(function(parsedUrl:NodeUrlObj,res:NodeHttpClientResp->Void):NodeHttpClientRequest {})
   function request(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):NodeHttpClientReq;
+  @:overload(function(parsedUrl:NodeUrlObj,res:NodeHttpClientResp->Void):Void {})
   function get(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):Void;
   function getAgent(host:String,port:Int):NodeAgent;
 }
@@ -577,8 +627,8 @@ typedef NodeHttp = {
 typedef NodeHttps = {
   function createServer(options:{key:String,cert:String},
                         listener:NodeHttpServerReq->NodeHttpServerResp->Void):NodeHttpServer;
-  function request(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):Void;
-  function get(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):Void;
+  function request(options:NodeHttpsReqOpt,res:NodeHttpClientResp->Void):Void;
+  function get(options:NodeHttpsReqOpt,res:NodeHttpClientResp->Void):Void;
 }
   
 typedef NodeDns = {
@@ -629,12 +679,16 @@ typedef NodeDGSocket = { > NodeEventEmitter,
   function dropMembership(multicastAddress:String,?multicastInterface:String):Void;
 }
   
+
 /* CRYPTO ..................................... */
   
 typedef NodeCredDetails = {
   var key:String;
   var cert:String;
   var ca:Array<String>;
+  /*
+    TODO
+  */
 }
 
 typedef NodePeerCert = {
@@ -660,11 +714,13 @@ typedef NodeHash = {
 typedef NodeCipher = {
   function update(data:Dynamic,?input_enc:String,?output_enc:String):Dynamic;
   function final(output_enc:String):Void;
+  function setAutoPadding(padding:Bool):Void; // default true
 }
   
 typedef NodeDecipher = {
   function update(data:Dynamic,?input_enc:String,?output_enc:String):Dynamic;
   function final(?output_enc:String):Dynamic;
+  function setAutoPadding(padding:Bool):Void; // default true
 }
   
 typedef NodeSigner = {
@@ -677,13 +733,32 @@ typedef NodeVerify = {
   function verify(cert:String,?sig_format:String):Bool;
 }
 
+typedef NodeDiffieHellman = {
+    function generateKeys(?enc:String):String;
+    function computeSecret(otherPublicKey:String,?inputEnc:String,?outputEnc:String):String;
+    function getPrime(?enc:String):Int;
+    function getGenerator(?enc:String):String;
+    function getPublicKey(?enc:String):String;
+    function getPrivateKey(?enc:String):String;
+    function setPublicKey(pubKey:String,?enc:String):Void;
+    function setPrivateKey(privKey:String,?enc:String):Void;
+}
+
 typedef NodeCrypto = {
   function createCredentials(details:NodeCredDetails):NodeCreds;
   function createHash(algo:String):NodeHash; // 'sha1', 'md5', 'sha256', 'sha512'
-  function createCipher(algo:String,key:String):NodeCipher;
+  function createCipher(algo:String,password:String):NodeCipher;
+  function createCipheriv(algo:String,key:String,iv:String):NodeCipher;
   function createDecipher(algo:String,key:String):NodeDecipher;
+  function createDecipheriv(algo:String,key:String,iv:String):NodeDecipher;
   function createSign(algo:String):NodeSigner;
   function createVerify(algo:String):NodeVerify;
+  @:overload(function(prime_length:Int):NodeDiffieHellman {})
+  function createDiffieHellman(prime:String,?enc:String):NodeDiffieHellman;
+  function getDiffieHellman(groupName:String):NodeDiffieHellman;
+  function pbkdf2(password:String,salt:String,iterations:Int,keylen:Int,cb:NodeErr->String):Void;
+  function randomBytes(size:Int,cb:NodeErr->NodeBuffer):Void;
+
 }
 
 /* TLS/SSL ................................................ */
