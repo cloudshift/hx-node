@@ -617,7 +617,7 @@ typedef NodeAgent = { > NodeEventEmitter,
 typedef NodeHttp = {
   function createServer(listener:NodeHttpServerReq->NodeHttpServerResp->Void):NodeHttpServer;
   function createClient(port:Int,host:String):NodeHttpClient;
-  @:overload(function(parsedUrl:NodeUrlObj,res:NodeHttpClientResp->Void):NodeHttpClientRequest {})
+  @:overload(function(parsedUrl:NodeUrlObj,res:NodeHttpClientResp->Void):NodeHttpClientReq {})
   function request(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):NodeHttpClientReq;
   @:overload(function(parsedUrl:NodeUrlObj,res:NodeHttpClientResp->Void):Void {})
   function get(options:NodeHttpReqOpt,res:NodeHttpClientResp->Void):Void;
@@ -911,11 +911,9 @@ class Node {
   public static var cluster(default,null) : NodeCluster;
   
   //  public static var paths:Array<String>;
-  @:overload(function (cb:Dynamic, delay:Int, ?args :Array<Dynamic>):Int {})
-  public static var setTimeout:Dynamic->Int->Int;
+  public static var setTimeout:Dynamic->Int->?Array<Dynamic>->Int;
   public static var clearTimeout:Int->Void;
-  @:overload(function (cb:Dynamic, delay:Int, ?args :Array<Dynamic>):Int {})
-  public static var setInterval:Dynamic->Int->Int;
+  public static var setInterval:Dynamic->Int->?Array<Dynamic>->Int;
   public static var clearInterval:Int->Void;  
   public static var global:Dynamic;
   
