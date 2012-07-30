@@ -1,0 +1,6 @@
+
+-cp .
+-D nodejs
+-main Test
+-js test.js
+-cmd node test.js

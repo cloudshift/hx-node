@@ -217,6 +217,13 @@ typedef NodeOs = {
   function networkInterfaces():Dynamic;
 }
 
+
+typedef NodeJsDate = {
+    function getTime():Int;
+    function toDateString():String;
+    function toUTCString():String;
+}
+
 typedef NodeStat = {
   var dev:Int;
   var ino:Int;
@@ -228,9 +235,9 @@ typedef NodeStat = {
   var size:Int;
   var blkSize:Int;
   var blocks:Int;
-  var atime:String;
-  var mtime:String;
-  var ctime:String;
+  var atime:NodeJsDate;
+  var mtime:NodeJsDate;
+  var ctime:NodeJsDate;
   
   function isFile():Bool;
   function isDirectory():Bool;
@@ -543,7 +550,8 @@ typedef NodeHttpServerReq = { >NodeEventEmitter,
 typedef NodeHttpServerResp = { > NodeWriteStream, 
   var statusCode:Int;
   function writeContinue():Void;
-  function writeHead(statusCode:Int,?reasonPhrase:String,?headers:Dynamic):Void;
+  @:overload(function(statusCode:Int,?reasonPhrase:String,?headers:Dynamic):Void {})
+  function writeHead(statusCode:Int,headers:Dynamic):Void;
   function setHeader(name:String,value:Dynamic):Void;
   function getHeader(name:String):Dynamic;
   function removeHeader(name:String):Void;
